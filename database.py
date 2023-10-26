@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 
 class DatabaseManager:
     def __init__(self):
+        os.environ.pop("HOST", None)
+        os.environ.pop("DB_USER", None)
+        os.environ.pop("PASSWORD", None)
+        os.environ.pop("DATABASE", None)
         load_dotenv()
         host = os.getenv("HOST")
         user = os.getenv("DB_USER")
@@ -17,16 +21,7 @@ class DatabaseManager:
     def execute(self, query):
         return pd.read_sql(query, self.engine)
 
-    def get_case_ids(self, query):
-        df = self.execute(query)
-        if "case_id" in df.columns:
-            return df["case_id"].tolist()
-        else:
-            raise ValueError(
-                "The result of the query does not contain 'case_id' column."
-            )
-
     def get_cohort(self, query):
-        cohort_case_ids = self.get_case_ids(query)
-        unique_case_ids = set(cohort_case_ids)
-        return list(unique_case_ids)
+        df = self.execute(query)
+        cohort = df.groupby("case_id")["case_submitter_id"].unique()
+        return cohort

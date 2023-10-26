@@ -2,7 +2,6 @@
 
 MINDS is a system designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC's portals.
 
-
 ## Installation
 
 Currently the cloud version of MINDS is in closed beta. But you can still recreate the MINDS database locally using the instructions in  [docs/local_install.md](docs/local_install.md).
@@ -10,7 +9,7 @@ Currently the cloud version of MINDS is in closed beta. But you can still recrea
 If you have access to the cloud version of MINDS, you can install the MINDS python package using pip:
 
 ```bash
-pip install git+
+pip install git+https://github.com/lab-rasool/MINDS.git
 ```
 
 After installing the package, please create a .env file in the root directory of the project with the following variables:
