@@ -29,23 +29,20 @@ DATABASE= # default: nihnci
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
-import MINDS as MINDS
+import MINDS
 
 # Create a MINDS object
 minds = MINDS.MINDS()
 
 # Query the database
-query = "SELECT case_id FROM clinical WHERE project_id = 'CPTAC-2'"
-case_ids = minds.get_cohort(query)
+query = "SELECT case_id FROM clinical WHERE project_id = 'TCGA-LUAD'"
+df = minds.query(query)
 ```
 
 ### Downloading data from the GDC
 
 ```python
-from MINDS.downloader import GDCFileDownloader
-
-# Download the data from the GDC for the give cases in the query
-download_dir = # provide a path to a directory to download the data to, ex: r"F:\\Projects\\FMT\\data"
-gdc_downloader = GDCFileDownloader(DATA_DIR=download_dir)
-gdc_downloader.process_cases(case_ids)
+cohort = minds.get_cohort(query)
+save_loc = "/data/TCGA-LUAD"
+minds.download(cohort=cohort, output_dir=save_loc)
 ```
