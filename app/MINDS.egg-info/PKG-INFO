@@ -1,3 +1,13 @@
+Metadata-Version: 2.1
+Name: minds
+Version: 0.1
+Summary: A package for downloading and processing data from the MINDS database
+Home-page: https://github.com/lab-rasool/MINDS
+Author: Aakash Tripathi
+Author-email: aakash.tripathi@moffitt.org
+License: MIT
+Description-Content-Type: text/markdown
+
 <div align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" height="200px" srcset="docs/logo.png">
@@ -38,15 +48,12 @@ DATABASE= # default: nihnci
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
-import minds
+import MINDS
 
-# get a list of all the tables in the database
-tables = minds.get_tables()
+# Create a MINDS object
+minds = MINDS.MINDS()
 
-# get a list of all the columns in a table
-columns = minds.get_columns("clinical")
-
-# Query the database directly
+# Query the database
 query = "SELECT case_id FROM clinical WHERE project_id = 'TCGA-LUAD'"
 df = minds.query(query)
 ```

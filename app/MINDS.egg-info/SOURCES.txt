@@ -1,0 +1,15 @@
+README.md
+setup.py
+app/MINDS.egg-info/PKG-INFO
+app/MINDS.egg-info/SOURCES.txt
+app/MINDS.egg-info/dependency_links.txt
+app/MINDS.egg-info/top_level.txt
+app/minds/__init__.py
+app/minds/database.py
+app/minds/downloader.py
+app/minds/update.py
+app/minds.egg-info/PKG-INFO
+app/minds.egg-info/SOURCES.txt
+app/minds.egg-info/dependency_links.txt
+app/minds.egg-info/requires.txt
+app/minds.egg-info/top_level.txt

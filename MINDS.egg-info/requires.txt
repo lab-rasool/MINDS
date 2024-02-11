@@ -27,4 +27,3 @@ tqdm
 uritemplate
 urllib3
 google-auth
-retry
