@@ -37,13 +37,23 @@ DATABASE=minds
 
 ## Usage
 
+### Initial setup and automated updates
+
+If you have locally setup the MINDS database, then you will need to populate it with data to do this, or to update the database with the latest data, you can use the following command:
+
+```python
+# Import the minds package
+import minds
+
+# Update the database with the latest data
+minds.update()
+```
+
 ### Querying the MINDS database
 
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
-import minds
-
 # get a list of all the tables in the database
 tables = minds.get_tables()
 
@@ -58,7 +68,11 @@ df = minds.query(query)
 ### Downloading data from MINDS
 
 ```python
+# Generate a cohort to download
 cohort = minds.get_cohort(query)
+# Set the output directory
 save_loc = "/data/TCGA-LUAD"
+
+# Download the data 
 minds.download(cohort=cohort, output_dir=save_loc)
 ```
