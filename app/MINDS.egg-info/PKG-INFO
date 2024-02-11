@@ -48,12 +48,15 @@ DATABASE= # default: nihnci
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
-import MINDS
+import minds
 
-# Create a MINDS object
-minds = MINDS.MINDS()
+# get a list of all the tables in the database
+tables = minds.get_tables()
 
-# Query the database
+# get a list of all the columns in a table
+columns = minds.get_columns("clinical")
+
+# Query the database directly
 query = "SELECT case_id FROM clinical WHERE project_id = 'TCGA-LUAD'"
 df = minds.query(query)
 ```

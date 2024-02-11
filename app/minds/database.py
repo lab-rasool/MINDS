@@ -8,12 +8,12 @@ import shutil
 
 
 class DatabaseManager:
-    def __init__(self):
+    def __init__(self, dotenv_path=".env"):
         os.environ.pop("HOST", None)
         os.environ.pop("DB_USER", None)
         os.environ.pop("PASSWORD", None)
         os.environ.pop("DATABASE", None)
-        load_dotenv()
+        load_dotenv(dotenv_path=dotenv_path)
         host = os.getenv("HOST")
         user = os.getenv("DB_USER")
         password = os.getenv("PASSWORD")
