@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
 import tarfile
+import retry
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -30,6 +31,7 @@ class MINDSUpdater:
             "filters": filters,
         }
 
+    @retry.retry(tries=3, delay=2, backoff=2, jitter=(1, 3))
     def download(self, url):
         data = self.build_data()
         data_type = url.split("/")[-1].split("_")[0]

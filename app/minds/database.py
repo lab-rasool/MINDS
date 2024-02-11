@@ -10,15 +10,17 @@ import shutil
 class DatabaseManager:
     def __init__(self, dotenv_path=".env"):
         os.environ.pop("HOST", None)
+        os.environ.pop("PORT", None)
         os.environ.pop("DB_USER", None)
         os.environ.pop("PASSWORD", None)
         os.environ.pop("DATABASE", None)
         load_dotenv(dotenv_path=dotenv_path)
         host = os.getenv("HOST")
+        port = os.getenv("PORT")
         user = os.getenv("DB_USER")
         password = os.getenv("PASSWORD")
         database = os.getenv("DATABASE")
-        database_url = f"mysql+pymysql://{user}:{password}@{host}/{database}"
+        database_url = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
         self.engine = create_engine(database_url)
 
     def execute(self, query):
@@ -31,8 +33,9 @@ class DatabaseManager:
 
     def get_tables(self):
         query = "SHOW TABLES"
-        tables_in_nihnci = self.execute(query)
-        tables = tables_in_nihnci["Tables_in_nihnci"]
+        tables_in_db = self.execute(query)
+        name_of_table = tables_in_db.columns[0]
+        tables = tables_in_db[name_of_table]
         return tables
 
     def get_columns(self, table):
@@ -41,6 +44,9 @@ class DatabaseManager:
         return columns["Field"]
 
     def update(self, temp_folder):
+        # make sure the temp folder exists
+        if not os.path.exists(temp_folder):
+            os.makedirs(temp_folder)
         # upload all the files to the database as a table
         logging.info("Uploading new data to the database")
         for file in os.listdir(temp_folder):

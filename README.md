@@ -13,9 +13,13 @@ MINDS is a system designed to integrate multimodal oncology data. It queries and
 
 ## Installation
 
-Currently the cloud version of MINDS is in closed beta. But you can still recreate the MINDS database locally using the instructions in  [docs/local_install.md](docs/local_install.md).
+Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system [here](https://docs.docker.com/get-docker/). Next, you will need to pull the MySQL docker image and run a container with the following command. Please replace `my-secret-pw` with your desired password and `port` with the port you want to use to access the database. The default port for MySQL is 3306. The following command will create a MySQL container with the name `minds` and the database `minds` with the password `my-secret-pw` and the port `port` exposed to the host machine.
 
-If you have access to the cloud version of MINDS, you can install the MINDS python package using pip:
+```bash
+docker run -d --name minds -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=minds -p port:3306 mysql
+```
+
+Finally, to install the MINDS python package use the following pip command:
 
 ```bash
 pip install git+https://github.com/lab-rasool/MINDS.git
@@ -24,11 +28,11 @@ pip install git+https://github.com/lab-rasool/MINDS.git
 After installing the package, please create a .env file in the root directory of the project with the following variables:
 
 ```bash
-HOST=  # the aws host name
-PORT=  # default: 3306
-DB_USER= # the aws database user
-PASSWORD= # the aws database password
-DATABASE= # default: nihnci
+HOST=       # default host name: localhost
+PORT=       # default port: 3306
+DB_USER=    # the default user: root
+PASSWORD=   # the password you set for the MySQL container
+DATABASE=minds   
 ```
 
 ## Usage
@@ -51,7 +55,7 @@ query = "SELECT case_id FROM clinical WHERE project_id = 'TCGA-LUAD'"
 df = minds.query(query)
 ```
 
-### Downloading data from the GDC
+### Downloading data from MINDS
 
 ```python
 cohort = minds.get_cohort(query)

@@ -92,7 +92,7 @@ def download(cohort, output_dir):
     tcia_download.process_cases(case_submitter_ids=case_submitter_ids)
 
 
-def update():
+def update(skip_download=False):
     """Update the database with the latest data from data sources
 
     Returns
@@ -100,5 +100,6 @@ def update():
     None
     """
     updater = MINDSUpdater()
-    # updater.threaded_update()
+    if not skip_download:
+        updater.threaded_update()
     db.update(updater.temp_folder)
