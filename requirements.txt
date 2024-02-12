@@ -28,3 +28,8 @@ uritemplate
 urllib3
 google-auth
 retry
+numpy
+pandas
+python-dotenv
+sqlalchemy
+pymysql
