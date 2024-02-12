@@ -33,3 +33,4 @@ pandas
 python-dotenv
 sqlalchemy
 pymysql
+cryptography
