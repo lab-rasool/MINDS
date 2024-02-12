@@ -61,7 +61,7 @@ tables = minds.get_tables()
 columns = minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT case_id FROM clinical WHERE project_id = 'TCGA-LUAD'"
+query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD'"
 df = minds.query(query)
 ```
 
