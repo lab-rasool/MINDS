@@ -50,7 +50,7 @@ DATABASE=minds
 
 ### Initial setup and automated updates
 
-If you have locally setup the MINDS database, then you will need to populate it with data to do this, or to update the database with the latest data, you can use the following command:
+If you have locally setup the MINDS database, then you will need to populate it with data. To do this, or to update the database with the latest data, you can use the following command:
 
 ```python
 # Import the minds package
