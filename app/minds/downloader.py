@@ -25,6 +25,53 @@ logging.basicConfig(
 )
 
 
+class PostProcessor:
+    def __init__(self, DATA_DIR, case_ids, case_submitter_ids):
+        self.DATA_DIR = DATA_DIR
+        self.case_ids = case_ids
+        self.case_submitter_ids = case_submitter_ids
+
+    def generate_manifest(self):
+        """
+        Generate a manifest.json file in the data directory that logs all files in the /raw subdirectory.
+        """
+        manifest = []
+        raw_dir = os.path.join(self.DATA_DIR, "raw")
+        for case_id in os.listdir(raw_dir):
+            case_dir = os.path.join(raw_dir, case_id)
+            if not os.path.isdir(case_dir):
+                continue
+            case_manifest = {"case_id": case_id}
+            for data_type in os.listdir(case_dir):
+                data_type_dir = os.path.join(case_dir, data_type)
+                data_manifest = []
+                for filename in os.listdir(data_type_dir):
+                    data_manifest.append(filename)
+                case_manifest[data_type] = data_manifest
+            manifest.append(case_manifest)
+        with open(os.path.join(self.DATA_DIR, "manifest.json"), "w") as f:
+            json.dump(manifest, f, indent=4)
+
+    def rename_files(self):
+        raw_data_path = os.path.join(self.DATA_DIR, "raw")
+        # Create a mapping of case_ids to their corresponding case_submitter_ids
+        case_mapping = dict(
+            zip(self.case_ids, [str(x[0]) for x in self.case_submitter_ids])
+        )
+        # Renaming directories
+        for case_id, case_submitter_id in case_mapping.items():
+            case_id_path = os.path.join(raw_data_path, case_id)
+            case_submitter_id_path = os.path.join(raw_data_path, case_submitter_id)
+            if os.path.exists(case_submitter_id_path) and os.listdir(
+                case_submitter_id_path
+            ):
+                logging.info(
+                    f"Directory {case_submitter_id_path} already exists. Skipping rename."
+                )
+            else:
+                os.rename(case_id_path, case_submitter_id_path)
+
+
 class GDCFileDownloader:
     """
     Class for downloading files from the GDC API based on case_ids.
@@ -153,28 +200,6 @@ class GDCFileDownloader:
                 time.sleep(30)
                 self.organize_files(case_id)
 
-    def generate_manifest(self):
-        """
-        Generate a manifest.json file in the data directory that logs all files in the /raw subdirectory.
-        """
-        manifest = []
-        raw_dir = os.path.join(self.DATA_DIR, "raw")
-        for case_id in os.listdir(raw_dir):
-            case_dir = os.path.join(raw_dir, case_id)
-            if not os.path.isdir(case_dir):
-                continue
-            case_manifest = {"case_id": case_id}
-            for data_type in os.listdir(case_dir):
-                data_type_dir = os.path.join(case_dir, data_type)
-                data_manifest = []
-                for filename in os.listdir(data_type_dir):
-                    file_uuid = os.path.splitext(filename)[0]
-                    data_manifest.append(file_uuid)
-                case_manifest[data_type] = data_manifest
-            manifest.append(case_manifest)
-        with open(os.path.join(self.DATA_DIR, "manifest.json"), "w") as f:
-            json.dump(manifest, f, indent=4)
-
     def post_process_cleanup(self):
         """
         Clean up the data directory by removing all .gz, .tar, and .txt files.
@@ -187,41 +212,6 @@ class GDCFileDownloader:
             ):
                 filepath = os.path.join(self.DATA_DIR, filename)
                 os.remove(filepath)
-
-    def rename(self, case_ids, case_submitter_ids):
-        raw_data_path = os.path.join(self.DATA_DIR, "raw")
-
-        # Create a mapping of case_ids to their corresponding case_submitter_ids
-        case_mapping = dict(zip(case_ids, [str(x[0]) for x in case_submitter_ids]))
-
-        # Renaming directories
-        for case_id, case_submitter_id in case_mapping.items():
-            case_id_path = os.path.join(raw_data_path, case_id)
-            case_submitter_id_path = os.path.join(raw_data_path, case_submitter_id)
-
-            if os.path.exists(case_submitter_id_path) and os.listdir(
-                case_submitter_id_path
-            ):
-                logging.info(
-                    f"Directory {case_submitter_id_path} already exists. Skipping rename."
-                )
-            else:
-                os.rename(case_id_path, case_submitter_id_path)
-
-        # Reading manifest.json
-        manifest_path = os.path.join(self.DATA_DIR, "manifest.json")
-        with open(manifest_path, "r") as f:
-            manifest_data = json.load(f)
-
-        # Updating case_id in manifest.json
-        for item in manifest_data:
-            old_case_id = item["case_id"]
-            if old_case_id in case_mapping:
-                item["case_id"] = case_mapping[old_case_id]
-
-        # Writing updated manifest.json
-        with open(manifest_path, "w") as f:
-            json.dump(manifest_data, f, indent=4)
 
     def multi_download(self, case_ids):
         """
@@ -259,8 +249,6 @@ class GDCFileDownloader:
         self.multi_extract()
         self.multi_organize(case_ids)
         self.post_process_cleanup()
-        self.generate_manifest()
-        self.rename(case_ids, case_submitter_ids)
 
 
 class IDCFileDownloader:
@@ -701,7 +689,9 @@ class TCIAFileDownloader:
     def manage_files(self, manifest):
         # generate folders for each case_submitter_id skip if already exists
         for case_submitter_id in tqdm(manifest["PatientID"].unique()):
-            case_submitter_id_path = os.path.join(self.output_dir, case_submitter_id)
+            case_submitter_id_path = os.path.join(
+                self.output_dir, "raw", case_submitter_id
+            )
             if os.path.exists(case_submitter_id_path):
                 continue
             else:
@@ -709,7 +699,9 @@ class TCIAFileDownloader:
 
         # move all SeriesInstanceUID folders to their respective case_submitter_id folders
         for case_submitter_id in tqdm(manifest["PatientID"].unique()):
-            case_submitter_id_path = os.path.join(self.output_dir, case_submitter_id)
+            case_submitter_id_path = os.path.join(
+                self.output_dir, "raw", case_submitter_id
+            )
             for series_instance_uid in manifest[
                 manifest["PatientID"] == case_submitter_id
             ]["SeriesInstanceUID"].unique():
@@ -741,10 +733,12 @@ class TCIAFileDownloader:
 
         # Remove empty dataframes
         final_df = pd.concat(results)
-        final_df.to_csv(os.path.join(self.output_dir, "manifest.csv"), index=False)
+        final_df.to_csv(
+            os.path.join(self.output_dir, "radiology_metadata.csv"), index=False
+        )
 
         # load manifest
-        manifest = pd.read_csv(os.path.join(self.output_dir, "manifest.csv"))
+        manifest = pd.read_csv(os.path.join(self.output_dir, "radiology_metadata.csv"))
 
         # manage files
         self.manage_files(manifest)

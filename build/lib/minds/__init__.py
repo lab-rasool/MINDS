@@ -1,4 +1,9 @@
-from .downloader import GDCFileDownloader, IDCFileDownloader, TCIAFileDownloader
+from .downloader import (
+    GDCFileDownloader,
+    IDCFileDownloader,
+    TCIAFileDownloader,
+    PostProcessor,
+)
 from .database import DatabaseManager
 from .update import MINDSUpdater
 
@@ -85,11 +90,16 @@ def download(cohort, output_dir):
     gdc_download = GDCFileDownloader(output_dir)
     gdc_download.process_cases(case_ids=case_ids, case_submitter_ids=case_submitter_ids)
 
+    post_processor = PostProcessor(output_dir, case_ids, case_submitter_ids)
+    post_processor.rename_files()
+
     # idc_download = IDCFileDownloader(output_dir)
     # idc_download.process_cases(case_submitter_ids=case_submitter_ids)
 
     tcia_download = TCIAFileDownloader(output_dir)
     tcia_download.process_cases(case_submitter_ids=case_submitter_ids)
+
+    post_processor.generate_manifest()
 
 
 def update(skip_download=False):

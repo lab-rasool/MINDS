@@ -1,9 +1,6 @@
+LICENSE
 README.md
 setup.py
-app/MINDS.egg-info/PKG-INFO
-app/MINDS.egg-info/SOURCES.txt
-app/MINDS.egg-info/dependency_links.txt
-app/MINDS.egg-info/top_level.txt
 app/minds/__init__.py
 app/minds/database.py
 app/minds/downloader.py
