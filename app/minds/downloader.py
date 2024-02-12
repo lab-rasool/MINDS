@@ -1,22 +1,23 @@
+import concurrent.futures
+import io
+import json
+import logging
 import os
 import re
-import requests
-import json
-import tarfile
 import shutil
+import tarfile
 import time
-from tqdm.contrib.concurrent import thread_map
-from google.cloud import storage
-from urllib.parse import urlparse
-from retry import retry
-from itertools import chain
-import logging
-import concurrent.futures
-from tqdm import tqdm
-import pandas as pd
 import zipfile
-import io
 from datetime import datetime, timedelta
+from itertools import chain
+from urllib.parse import urlparse
+
+import pandas as pd
+import requests
+from google.cloud import storage
+from retry import retry
+from tqdm import tqdm
+from tqdm.contrib.concurrent import thread_map
 
 logging.basicConfig(
     level=logging.INFO,
@@ -139,7 +140,7 @@ class GDCFileDownloader:
             # write to log file
             log_file.write(f"{file_name} {case_id}\n")
         else:
-            logging.log(f"Content-Disposition header missing")
+            logging.log("Content-Disposition header missing")
 
     def download_files_for_case_id(self, case_id):
         """

@@ -1,9 +1,10 @@
-import requests
 import datetime
-from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
 import tarfile
+from concurrent.futures import ThreadPoolExecutor
+
+import requests
 import retry
 
 logging.basicConfig(

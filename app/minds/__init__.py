@@ -1,10 +1,10 @@
+from .database import DatabaseManager
 from .downloader import (
     GDCFileDownloader,
     IDCFileDownloader,
-    TCIAFileDownloader,
     PostProcessor,
+    TCIAFileDownloader,
 )
-from .database import DatabaseManager
 from .update import MINDSUpdater
 
 db = DatabaseManager()
