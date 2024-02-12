@@ -69,6 +69,36 @@ class PostProcessor:
                 logging.info(
                     f"Directory {case_submitter_id_path} already exists. Skipping rename."
                 )
+                for data_type in os.listdir(case_id_path):
+                    data_type_path = os.path.join(case_id_path, data_type)
+                    case_submitter_id_data_type_path = os.path.join(
+                        case_submitter_id_path, data_type
+                    )
+                    os.makedirs(case_submitter_id_data_type_path, exist_ok=True)
+                    for filename in os.listdir(data_type_path):
+                        file_path = os.path.join(data_type_path, filename)
+                        if os.path.exists(
+                            os.path.join(case_submitter_id_data_type_path, filename)
+                        ):
+                            case_id_data_type_path = os.path.join(
+                                case_id_path, data_type, filename
+                            )
+                            try:
+                                shutil.rmtree(case_id_data_type_path)
+                            except Exception as e:
+                                logging.error(
+                                    f"An error occurred while deleting {case_id_path}: {e}"
+                                )
+                            continue
+                        else:
+                            shutil.move(file_path, case_submitter_id_data_type_path)
+                    os.rmdir(data_type_path)
+                try:
+                    os.rmdir(case_id_path)
+                except Exception as e:
+                    logging.error(
+                        f"An error occurred while deleting {case_id_path}: {e}"
+                    )
             else:
                 os.rename(case_id_path, case_submitter_id_path)
 
@@ -122,8 +152,8 @@ class GDCFileDownloader:
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def download_files(self, file_uuids, case_id):
-        # make a log file that stores the filenames and case_id
-        log_file = open("log.txt", "a")
+        os.makedirs(self.DATA_DIR, exist_ok=True)
+        log_file = open(os.path.join(self.DATA_DIR, "gdc.log"), "a")
 
         params = {"ids": file_uuids}
         response = requests.post(
@@ -169,7 +199,7 @@ class GDCFileDownloader:
                             extraction_successful = True
                     except EOFError as e:
                         logging.error(
-                            f"EOF Error: {e}. Check Log.txt for case_id details."
+                            f"EOF Error: {e}. Check gdc.log for case_id details."
                         )
                     except PermissionError as e:
                         logging.error(f"Permission Error: {e}.")
@@ -184,6 +214,7 @@ class GDCFileDownloader:
         :param case_id: The ID of the case to organize files for.
         """
         target_dir = os.path.join(self.DATA_DIR, "raw", case_id)
+        logging.info(f"Organizing files for case_id: {case_id}")
         for file_uuid in self.get_file_uuids_for_case_id(case_id):
             response = requests.get(
                 self.BASE_URL + self.FILES_ENDPOINT + "/" + file_uuid
@@ -204,12 +235,13 @@ class GDCFileDownloader:
 
     def post_process_cleanup(self):
         """
-        Clean up the data directory by removing all .gz, .tar, and .txt files.
+        Clean up the data directory by removing all .gz, .tar, .txt, and .log files.
         """
         for filename in os.listdir(self.DATA_DIR):
             if (
                 filename.endswith(".gz")
                 or filename.endswith(".tar")
+                or filename.endswith(".log")
                 or filename.endswith(".txt")
             ):
                 filepath = os.path.join(self.DATA_DIR, filename)
@@ -225,6 +257,7 @@ class GDCFileDownloader:
             self.download_files_for_case_id,
             case_ids,
             max_workers=self.MAX_WORKERS,
+            progress_bar=False,
         )
 
     def multi_extract(self):
@@ -236,6 +269,7 @@ class GDCFileDownloader:
             [".gz", ".tar"],
             ["r:gz", "r"],
             max_workers=self.MAX_WORKERS,
+            progress_bar=False,
         )
 
     def multi_organize(self, case_ids):
@@ -248,6 +282,7 @@ class GDCFileDownloader:
             self.organize_files,
             case_ids,
             max_workers=self.MAX_WORKERS,
+            progress_bar=False,
         )
 
     def process_cases(self, case_ids, case_submitter_ids):
@@ -735,8 +770,6 @@ class TCIAFileDownloader:
                 os.makedirs(modality_path, exist_ok=True)
                 shutil.move(series_instance_uid_path, modality_path)
 
-        # TODO: post process cleanup
-
     def process_cases(self, case_submitter_ids):
         results = []
         for case_submitter_id in tqdm(case_submitter_ids):
@@ -749,7 +782,10 @@ class TCIAFileDownloader:
                 )
                 results.append(series)
 
-        final_df = pd.concat(results)
+        if results:
+            final_df = pd.concat(results)
+        else:
+            final_df = pd.DataFrame()
         if final_df.empty:
             return
 
