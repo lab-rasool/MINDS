@@ -78,7 +78,7 @@ class GDCFileDownloader:
     Class for downloading files from the GDC API based on case_ids.
     """
 
-    def __init__(self, DATA_DIR):
+    def __init__(self, DATA_DIR, MAX_WORKERS):
         """
         Initialize the downloader with a specific data directory.
 
@@ -88,6 +88,7 @@ class GDCFileDownloader:
         self.FILES_ENDPOINT = "files"
         self.DATA_ENDPOINT = "data"
         self.DATA_DIR = DATA_DIR
+        self.MAX_WORKERS = MAX_WORKERS
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def get_file_uuids_for_case_id(self, case_id):
@@ -220,7 +221,11 @@ class GDCFileDownloader:
 
         :param case_ids: List of case IDs to download files for.
         """
-        thread_map(self.download_files_for_case_id, case_ids)
+        thread_map(
+            self.download_files_for_case_id,
+            case_ids,
+            max_workers=self.MAX_WORKERS,
+        )
 
     def multi_extract(self):
         """
@@ -230,6 +235,7 @@ class GDCFileDownloader:
             lambda ext, mode: self.extract_files(ext, mode),
             [".gz", ".tar"],
             ["r:gz", "r"],
+            max_workers=self.MAX_WORKERS,
         )
 
     def multi_organize(self, case_ids):
@@ -238,7 +244,11 @@ class GDCFileDownloader:
 
         :param case_ids: List of case IDs to organize files for.
         """
-        thread_map(self.organize_files, case_ids)
+        thread_map(
+            self.organize_files,
+            case_ids,
+            max_workers=self.MAX_WORKERS,
+        )
 
     def process_cases(self, case_ids, case_submitter_ids):
         """
@@ -475,7 +485,11 @@ class IDCFileDownloader:
                 manifest_data.append(new_entry)
                 manifest_dict[patient_id] = new_entry
 
-        thread_map(update_single_entry, merged_data)
+        thread_map(
+            update_single_entry,
+            merged_data,
+            max_workers=self.MAX_WORKERS,
+        )
 
         # Save the updated manifest back to disk
         with open(manifest_path, "w") as f:
@@ -493,7 +507,9 @@ class IDCFileDownloader:
     def process_cases(self, case_submitter_ids):
         # Generate merged_data for all cases
         all_merged_data = thread_map(
-            self.generate_merged_data_for_case, case_submitter_ids
+            self.generate_merged_data_for_case,
+            case_submitter_ids,
+            max_workers=self.MAX_WORKERS,
         )
 
         all_merged_data = list(chain.from_iterable(all_merged_data))
@@ -503,8 +519,9 @@ class IDCFileDownloader:
 
 
 class TCIAFileDownloader:
-    def __init__(self, output_dir):
+    def __init__(self, output_dir, MAX_WORKERS):
         self.output_dir = output_dir
+        self.MAX_WORKERS = MAX_WORKERS
 
     def setApiUrl(self, endpoint, api_url):
         searchEndpoints = [
@@ -732,8 +749,10 @@ class TCIAFileDownloader:
                 )
                 results.append(series)
 
-        # Remove empty dataframes
         final_df = pd.concat(results)
+        if final_df.empty:
+            return
+
         final_df.to_csv(
             os.path.join(self.output_dir, "radiology_metadata.csv"), index=False
         )

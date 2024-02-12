@@ -39,10 +39,10 @@ pip install git+https://github.com/lab-rasool/MINDS.git
 After installing the package, please create a .env file in the root directory of the project with the following variables:
 
 ```bash
-HOST=       # default host name: localhost
-PORT=       # default port: 3306
-DB_USER=    # the default user: root
-PASSWORD=   # the password you set for the MySQL container
+HOST=localhost
+PORT=3306
+DB_USER=root
+PASSWORD=my-secret-pw
 DATABASE=minds   
 ```
 

@@ -70,7 +70,7 @@ def get_cohort(query):
     return db.get_cohort(query)
 
 
-def download(cohort, output_dir):
+def download(cohort, output_dir, threads=4):
     """Download the files for a given cohort
 
     Parameters
@@ -84,11 +84,18 @@ def download(cohort, output_dir):
     -------
     None
     """
+
+    MAX_WORKERS = threads
+
     case_ids = cohort.index.tolist()
     case_submitter_ids = cohort.values.tolist()
 
     gdc_download = GDCFileDownloader(output_dir)
-    gdc_download.process_cases(case_ids=case_ids, case_submitter_ids=case_submitter_ids)
+    gdc_download.process_cases(
+        case_ids=case_ids,
+        case_submitter_ids=case_submitter_ids,
+        MAX_WORKERS=MAX_WORKERS,
+    )
 
     post_processor = PostProcessor(output_dir, case_ids, case_submitter_ids)
     post_processor.rename_files()
@@ -96,7 +103,10 @@ def download(cohort, output_dir):
     # idc_download = IDCFileDownloader(output_dir)
     # idc_download.process_cases(case_submitter_ids=case_submitter_ids)
 
-    tcia_download = TCIAFileDownloader(output_dir)
+    tcia_download = TCIAFileDownloader(
+        output_dir,
+        MAX_WORKERS=MAX_WORKERS,
+    )
     tcia_download.process_cases(case_submitter_ids=case_submitter_ids)
 
     post_processor.generate_manifest()
