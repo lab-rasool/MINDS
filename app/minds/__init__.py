@@ -86,15 +86,16 @@ def download(cohort, output_dir, threads=4):
     """
 
     MAX_WORKERS = threads
-
     case_ids = cohort.index.tolist()
     case_submitter_ids = cohort.values.tolist()
 
-    gdc_download = GDCFileDownloader(output_dir)
+    gdc_download = GDCFileDownloader(
+        output_dir,
+        MAX_WORKERS=MAX_WORKERS,
+    )
     gdc_download.process_cases(
         case_ids=case_ids,
         case_submitter_ids=case_submitter_ids,
-        MAX_WORKERS=MAX_WORKERS,
     )
 
     post_processor = PostProcessor(output_dir, case_ids, case_submitter_ids)
