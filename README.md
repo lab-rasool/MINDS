@@ -3,6 +3,10 @@
         <source media="(prefers-color-scheme: dark)" height="150px" srcset="docs\assets\README_logo.png">
         <img alt="logo" height="150px" src="docs/logo.png">
     </picture>
+    <!-- add a line no text-->
+    <br>
+    <h1>
+    </h1>
 </div>
 
 MINDS is a system designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
