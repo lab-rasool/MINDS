@@ -1,3 +1,5 @@
 .env
 *.ipynb
 \data
+__pycache__
+.vscode

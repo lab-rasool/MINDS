@@ -1,19 +1,45 @@
-<div align="center">
-    <picture>
-        <source media="(prefers-color-scheme: dark)" height="200px" srcset="docs\assets\README_logo.png">
-        <img alt="logo" height="200px" src="docs/logo.png" style="border-radius: 25px;">
-    </picture>
-    <br>
-    <h1>
-    </h1>
+
+# Welcome to the MINDS Database Documentation
+
+<!-- <p align="left">
+    <img src="logo.png" alt="Logo" width="200"/>
+</p>
+Multimodal Integration of Oncology Data System -->
+
+<html>
+<head>
+    <style>
+        .container {
+            display: flex;
+            align-items: center; /* Aligns items vertically in the center */
+        }
+        .text {
+            margin-left: 20px; /* Adjusts spacing between the logo and the text */
+            font-size: 40px; /* Adjust the font size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p align="left">
+        <img src="assets\logo.png" alt="Logo" width="250"/>
+    </p>
+    <div class="text">
+        <span style="display:block;font-weight:bold;font-size:40px;"><u>M</u>ultimodal <u>I</u>ntegration of O<u>n</u>cology <u>D</u>ata <u>S</u>ystem</span>
+    </div>
 </div>
+</body>
+</html>
+
 
 
 MINDS is a system designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
 ## Installation
 
-Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system [here](https://docs.docker.com/get-docker/). Next, you will need to pull the MySQL docker image and run a container with the following command. 
+Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system [here](https://docs.docker.com/get-docker/). Next, you will need to pull the MySQL docker image and run a container with the following command.
 
 **NOTE:** Please replace `my-secret-pw` with your desired password and `port` with the port you want to use to access the database. The default port for MySQL is 3306. The following command will not work until you replace `port` with a valid port number.
 
