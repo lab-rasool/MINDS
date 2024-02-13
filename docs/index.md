@@ -35,7 +35,7 @@ Multimodal Integration of Oncology Data System -->
 
 
 
-MINDS is a system designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
 ## Installation
 
