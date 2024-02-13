@@ -3,7 +3,6 @@
         <source media="(prefers-color-scheme: dark)" height="150px" srcset="docs\assets\README_logo.png">
         <img alt="logo" height="150px" src="docs/logo.png">
     </picture>
-    <!-- add a line no text-->
     <br>
     <h1>
     </h1>
@@ -13,7 +12,7 @@ MINDS is a framework designed to integrate multimodal oncology data. It queries 
 
 ## Installation
 
-Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system [here](https://docs.docker.com/get-docker/). Next, you will need to pull the MySQL docker image and run a container with the following command. 
+Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system [here](https://docs.docker.com/get-docker/). Next, you will need to pull the MySQL docker image and run a container with the following command.
 
 **NOTE:** Please replace `my-secret-pw` with your desired password and `port` with the port you want to use to access the database. The default port for MySQL is 3306. The following command will not work until you replace `port` with a valid port number.
 
@@ -77,4 +76,19 @@ save_loc = "/data/TCGA-LUAD"
 
 # Download the data 
 minds.download(cohort=cohort, output_dir=save_loc)
+```
+
+## Please cite our work
+
+**Note**: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:
+
+```bibtex
+@misc{tripathi2023building,
+      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
+      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
+      year={2023},
+      eprint={2310.01438},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 ```

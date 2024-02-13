@@ -1,11 +1,6 @@
 
 # Welcome to the MINDS Database Documentation
 
-<!-- <p align="left">
-    <img src="logo.png" alt="Logo" width="200"/>
-</p>
-Multimodal Integration of Oncology Data System -->
-
 <html>
 <head>
     <style>
@@ -32,8 +27,6 @@ Multimodal Integration of Oncology Data System -->
 </div>
 </body>
 </html>
-
-
 
 MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
