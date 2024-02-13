@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" height="200px" srcset="docs/logo.png">
         <img alt="logo" height="200px" src="docs/logo.png" style="border-radius: 25px;">
@@ -7,7 +7,34 @@
     <h1>
         Multimodal Integration of Oncology Data System (MINDS)
     </h1>
+</div> -->
+
+<html>
+<head>
+    <style>
+        .container {
+            display: flex;
+            align-items: center; /* Aligns items vertically in the center */
+        }
+        .text {
+            margin-left: 20px; /* Adjusts spacing between the logo and the text */
+            font-size: 40px; /* Adjust the font size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p align="left">
+        <img src="docs\logo.png" alt="Logo" width="250"/>
+    </p>
+    <div class="text">
+        <span style="display:block;font-weight:bold;font-size:40px;"><u>M</u>ultimodal <u>I</u>ntegration of O<u>n</u>cology <u>D</u>ata <u>S</u>ystem</span>
+    </div>
 </div>
+</body>
+</html>
 
 MINDS is a system designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
