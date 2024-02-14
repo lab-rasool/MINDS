@@ -20,15 +20,25 @@ class DatabaseManager:
         port = os.getenv("PORT")
         user = os.getenv("DB_USER")
         password = os.getenv("PASSWORD")
-        database = os.getenv("DATABASE")
-        database_url = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
+        self.database = os.getenv("DATABASE")
+        database_url = (
+            f"mysql+pymysql://{user}:{password}@{host}:{port}/{self.database}"
+        )
         self.engine = create_engine(database_url)
 
     def execute(self, query):
         return pd.read_sql(query, self.engine)
 
-    def get_cohort(self, query):
+    def get_minds_cohort(self, query):
         df = self.execute(query)
+        cohort = df.groupby("case_id")["case_submitter_id"].unique()
+        return cohort
+
+    def get_gdc_cohort(self, gdc_cohort):
+        cohort = pd.read_csv(gdc_cohort, sep="\t", dtype=str)
+        df = self.execute(
+            f"SELECT case_id, case_submitter_id FROM {self.database}.clinical WHERE case_id IN {tuple(cohort['id'])}"
+        )
         cohort = df.groupby("case_id")["case_submitter_id"].unique()
         return cohort
 

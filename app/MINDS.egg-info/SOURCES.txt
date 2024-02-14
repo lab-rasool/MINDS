@@ -2,6 +2,7 @@ LICENSE
 README.md
 setup.py
 app/minds/__init__.py
+app/minds/aggregator.py
 app/minds/database.py
 app/minds/downloader.py
 app/minds/update.py

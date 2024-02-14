@@ -62,20 +62,22 @@ tables = minds.get_tables()
 columns = minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD'"
+query = "SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
 df = minds.query(query)
 ```
 
 ### Downloading data from MINDS
 
 ```python
-# Generate a cohort to download
-cohort = minds.get_cohort(query)
-# Set the output directory
-save_loc = "/data/TCGA-LUAD"
+# Generate a cohort to download from query
+query_cohort = minds.build_cohort(query=query, output_dir="./data")
 
-# Download the data 
-minds.download(cohort=cohort, output_dir=save_loc)
+# or you can now directly supply a cohort from GDC
+gdc_cohort = minds.build_cohort(cohort_file="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
+
+# To download the data from the a cohort, simply call the download method for the cohort 
+# for example, downloading the gdc_cohort
+gdc_cohort.download()
 ```
 
 ## Please cite our work

@@ -26,129 +26,15 @@ logging.basicConfig(
 )
 
 
-class PostProcessor:
-    def __init__(self, DATA_DIR, case_ids, case_submitter_ids):
-        self.DATA_DIR = DATA_DIR
-        self.case_ids = case_ids
-        self.case_submitter_ids = case_submitter_ids
-
-    def generate_manifest(self):
-        """
-        Generate a manifest.json file in the data directory that logs all files in the /raw subdirectory.
-        """
-        manifest = []
-        raw_dir = os.path.join(self.DATA_DIR, "raw")
-        for case_id in os.listdir(raw_dir):
-            case_dir = os.path.join(raw_dir, case_id)
-            if not os.path.isdir(case_dir):
-                continue
-            case_manifest = {"case_id": case_id}
-            for data_type in os.listdir(case_dir):
-                data_type_dir = os.path.join(case_dir, data_type)
-                data_manifest = []
-                for filename in os.listdir(data_type_dir):
-                    data_manifest.append(filename)
-                case_manifest[data_type] = data_manifest
-            manifest.append(case_manifest)
-        with open(os.path.join(self.DATA_DIR, "manifest.json"), "w") as f:
-            json.dump(manifest, f, indent=4)
-
-    def rename_files(self):
-        raw_data_path = os.path.join(self.DATA_DIR, "raw")
-        # Create a mapping of case_ids to their corresponding case_submitter_ids
-        case_mapping = dict(
-            zip(self.case_ids, [str(x[0]) for x in self.case_submitter_ids])
-        )
-        # Renaming directories
-        for case_id, case_submitter_id in case_mapping.items():
-            case_id_path = os.path.join(raw_data_path, case_id)
-            case_submitter_id_path = os.path.join(raw_data_path, case_submitter_id)
-            if os.path.exists(case_submitter_id_path) and os.listdir(
-                case_submitter_id_path
-            ):
-                logging.info(
-                    f"Directory {case_submitter_id_path} already exists. Skipping rename."
-                )
-                for data_type in os.listdir(case_id_path):
-                    data_type_path = os.path.join(case_id_path, data_type)
-                    case_submitter_id_data_type_path = os.path.join(
-                        case_submitter_id_path, data_type
-                    )
-                    os.makedirs(case_submitter_id_data_type_path, exist_ok=True)
-                    for filename in os.listdir(data_type_path):
-                        file_path = os.path.join(data_type_path, filename)
-                        if os.path.exists(
-                            os.path.join(case_submitter_id_data_type_path, filename)
-                        ):
-                            case_id_data_type_path = os.path.join(
-                                case_id_path, data_type, filename
-                            )
-                            try:
-                                shutil.rmtree(case_id_data_type_path)
-                            except Exception as e:
-                                logging.error(
-                                    f"An error occurred while deleting {case_id_path}: {e}"
-                                )
-                            continue
-                        else:
-                            shutil.move(file_path, case_submitter_id_data_type_path)
-                    os.rmdir(data_type_path)
-                try:
-                    os.rmdir(case_id_path)
-                except Exception as e:
-                    logging.error(
-                        f"An error occurred while deleting {case_id_path}: {e}"
-                    )
-            else:
-                os.rename(case_id_path, case_submitter_id_path)
-
-
 class GDCFileDownloader:
-    """
-    Class for downloading files from the GDC API based on case_ids.
-    """
-
     def __init__(self, DATA_DIR, MAX_WORKERS):
-        """
-        Initialize the downloader with a specific data directory.
-
-        :param DATA_DIR: Directory where downloaded data will be stored.
-        """
         self.BASE_URL = "https://api.gdc.cancer.gov/"
-        self.FILES_ENDPOINT = "files"
         self.DATA_ENDPOINT = "data"
         self.DATA_DIR = DATA_DIR
         self.MAX_WORKERS = MAX_WORKERS
-
-    @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
-    def get_file_uuids_for_case_id(self, case_id):
-        """
-        Fetch file UUIDs from the GDC API based on a given case_id.
-
-        :param case_id: The ID of the case to fetch file UUIDs for.
-        :return: List of file UUIDs associated with the given case_id.
-        """
-        filters = {
-            "op": "and",
-            "content": [
-                {
-                    "op": "in",
-                    "content": {"field": "cases.case_id", "value": [case_id]},
-                },
-                {"op": "=", "content": {"field": "access", "value": ["open"]}},
-            ],
-        }
-        params = {
-            "filters": json.dumps(filters),
-            "fields": "file_id",
-            "format": "JSON",
-            "size": "1_000_000",
-        }
-        response = requests.get(self.BASE_URL + self.FILES_ENDPOINT, params=params)
-        file_uuids = []
-        for file_entry in json.loads(response.content.decode("utf-8"))["data"]["hits"]:
-            file_uuids.append(file_entry["file_id"])
-        return file_uuids
+        self.MANIFEST_FILE = os.path.join(DATA_DIR, "manifest.json")
+        with open(self.MANIFEST_FILE, "r") as f:
+            self.manifest = json.load(f)
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def download_files(self, file_uuids, case_id):
@@ -173,91 +59,73 @@ class GDCFileDownloader:
         else:
             logging.log("Content-Disposition header missing")
 
-    def download_files_for_case_id(self, case_id):
-        """
-        Download all files associated with a given case_id.
-
-        :param case_id: The ID of the case to download files for.
-        """
-        try:
-            logging.info(f"Downloading files for case_id: {case_id}")
-            file_uuids = self.get_file_uuids_for_case_id(case_id)
-            self.download_files(file_uuids, case_id)
-        except Exception as e:
-            logging.error(f"An error occurred while downloading files: {e}")
+    def download_files_for_patient(self, patient_data):
+        gdc_case_id = patient_data["gdc_case_id"]
+        logging.info(f"Downloading files for PatientID: {gdc_case_id}")
+        for data_type, files in patient_data.items():
+            if data_type in ["PatientID", "gdc_case_id"]:
+                continue
+            file_uuids = [file["id"] for file in files]
+            self.download_files(file_uuids, gdc_case_id)
 
     def extract_files(self, ext, mode):
         for filename in os.listdir(self.DATA_DIR):
             if filename.endswith(ext):
                 logging.info(f"Extracting {filename}")
                 filepath = os.path.join(self.DATA_DIR, filename)
-                extraction_successful = False
-                while not extraction_successful:
-                    try:
-                        with tarfile.open(filepath, mode) as tar:
-                            tar.extractall(path=self.DATA_DIR)
-                            extraction_successful = True
-                    except EOFError as e:
-                        logging.error(
-                            f"EOF Error: {e}. Check gdc.log for case_id details."
-                        )
-                    except PermissionError as e:
-                        logging.error(f"Permission Error: {e}.")
-                        continue
-                    except Exception as e:
-                        logging.error(f"An error occurred while extracting: {e}")
-
-    def organize_files(self, case_id):
-        """
-        Organize files in the data directory into subdirectories by case_id and data type.
-
-        :param case_id: The ID of the case to organize files for.
-        """
-        target_dir = os.path.join(self.DATA_DIR, "raw", case_id)
-        logging.info(f"Organizing files for case_id: {case_id}")
-        for file_uuid in self.get_file_uuids_for_case_id(case_id):
-            response = requests.get(
-                self.BASE_URL + self.FILES_ENDPOINT + "/" + file_uuid
-            )
-            if response.status_code == 200:
-                data_type = response.json()["data"]["data_type"]
-                os.makedirs(os.path.join(target_dir, data_type), exist_ok=True)
                 try:
-                    shutil.move(
-                        os.path.join(self.DATA_DIR, file_uuid),
-                        os.path.join(target_dir, data_type, file_uuid),
+                    with tarfile.open(filepath, mode) as tar:
+                        tar.extractall(path=self.DATA_DIR)
+                except EOFError as e:
+                    logging.error(f"EOF Error: {e}. Check gdc.log for case_id details.")
+                except PermissionError as e:
+                    logging.error(f"Permission Error: {e}.")
+                    continue
+                except Exception as e:
+                    logging.error(f"An error occurred while extracting {filename}: {e}")
+
+    def organize_files(self):
+        for patient in self.manifest:
+            patient_id = patient["PatientID"]
+            for data_type, files in patient.items():
+                if data_type in ["PatientID", "gdc_case_id"]:  # Skip non-file entries
+                    continue
+
+                for file in files:
+                    file_uuid = file["id"]
+                    file_name = file["file_name"]
+                    # Construct the target directory path for each file
+                    target_dir = os.path.join(
+                        self.DATA_DIR, "raw", patient_id, data_type, file_uuid
                     )
-                except (FileNotFoundError, FileExistsError, shutil.Error):
-                    pass
-            elif response.status_code == 429:
-                time.sleep(30)
-                self.organize_files(case_id)
+                    os.makedirs(target_dir, exist_ok=True)
 
-    def post_process_cleanup(self):
-        """
-        Clean up the data directory by removing all .gz, .tar, .txt, and .log files.
-        """
-        for filename in os.listdir(self.DATA_DIR):
-            if (
-                filename.endswith(".gz")
-                or filename.endswith(".tar")
-                or filename.endswith(".log")
-                or filename.endswith(".txt")
-            ):
-                filepath = os.path.join(self.DATA_DIR, filename)
-                os.remove(filepath)
+                    # Construct the source file path
+                    source_file_path = os.path.join(self.DATA_DIR, file_name)
 
-    def multi_download(self, case_ids):
-        """
-        Concurrently download files for multiple case_ids.
+                    # Check if the source file exists and move it
+                    if os.path.isfile(source_file_path):
+                        shutil.move(source_file_path, target_dir)
 
-        :param case_ids: List of case IDs to download files for.
+                    # If a folder exists for the file UUID (not expected in JSON structure but just in case)
+                    source_folder_path = os.path.join(self.DATA_DIR, file_uuid)
+                    if os.path.isdir(source_folder_path):
+                        for item in os.listdir(source_folder_path):
+                            shutil.move(
+                                os.path.join(source_folder_path, item), target_dir
+                            )
+                        os.rmdir(
+                            source_folder_path
+                        )  # Remove the now-empty file_uuid directory
+
+    def multi_download(self):
+        """
+        Concurrently download files for all patients in the manifest.
         """
         thread_map(
-            self.download_files_for_case_id,
-            case_ids,
+            self.download_files_for_patient,
+            self.manifest,
             max_workers=self.MAX_WORKERS,
-            progress_bar=False,
         )
 
     def multi_extract(self):
@@ -266,34 +134,34 @@ class GDCFileDownloader:
         """
         thread_map(
             lambda ext, mode: self.extract_files(ext, mode),
-            [".gz", ".tar"],
-            ["r:gz", "r"],
+            [".tar.gz"],
+            ["r:gz"],
             max_workers=self.MAX_WORKERS,
-            progress_bar=False,
         )
 
-    def multi_organize(self, case_ids):
+    def post_process_cleanup(self):
         """
-        Concurrently organize files for multiple case_ids.
-
-        :param case_ids: List of case IDs to organize files for.
+        Clean up the data directory by removing all .gz, .tar, .txt, and .log files.
         """
-        thread_map(
-            self.organize_files,
-            case_ids,
-            max_workers=self.MAX_WORKERS,
-            progress_bar=False,
-        )
+        for filename in os.listdir(self.DATA_DIR):
+            if (
+                filename.endswith(".tar.gz")
+                or filename.endswith(".tar")
+                or filename.endswith(".log")
+                or filename.endswith(".txt")
+            ):
+                filepath = os.path.join(self.DATA_DIR, filename)
+                os.remove(filepath)
 
-    def process_cases(self, case_ids, case_submitter_ids):
+    def process_cases(self):
         """
         Process a list of case_ids by downloading, extracting, organizing, and cleaning up files.
 
         :param case_ids: List of case IDs to process.
         """
-        self.multi_download(case_ids)
+        self.multi_download()
         self.multi_extract()
-        self.multi_organize(case_ids)
+        self.organize_files()
         self.post_process_cleanup()
 
 

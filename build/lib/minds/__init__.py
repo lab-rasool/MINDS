@@ -1,8 +1,9 @@
+import os
+
+from .aggregator import Aggregator
 from .database import DatabaseManager
 from .downloader import (
     GDCFileDownloader,
-    IDCFileDownloader,
-    PostProcessor,
     TCIAFileDownloader,
 )
 from .update import MINDSUpdater
@@ -53,64 +54,40 @@ def query(query):
     return db.execute(query)
 
 
-def get_cohort(query):
-    """Query the database and return the case ids and case_submitter_ids as two lists
-
-    Parameters
-    ----------
-    query_string : str
-        The query string to be executed on the database
-
-    Returns
-    -------
-    dataframe
-        A df containing unique case_ids and their case_submitter_ids for a query
-    """
-
-    return db.get_cohort(query)
+def build_cohort(output_dir, query=None, gdc_cohort=None):
+    if query:
+        cohort = db.get_minds_cohort(query)
+    elif gdc_cohort:
+        cohort = db.get_gdc_cohort(gdc_cohort)
+    else:
+        raise ValueError("Either a query or a .tsv gdc_cohort file must be provided")
+    aggregator = Aggregator(cohort, output_dir)
+    aggregator.generate_manifest()
+    cohort.download = lambda: download(output_dir=output_dir)
+    return cohort
 
 
-def download(cohort, output_dir, threads=4):
-    """Download the files for a given cohort
+def download(output_dir, threads=4):
 
-    Parameters
-    ----------
-    cohort : dataframe
-        A df containing unique case_ids and their case_submitter_ids for a query
-    output_dir : str
-        The directory where the files should be downloaded
-
-    Returns
-    -------
-    None
-    """
+    if not os.path.exists(f"{output_dir}/manifest.json"):
+        raise ValueError(
+            f"No manifest file found in {output_dir}, please run minds.build_cohort first. \n \
+            If you have already run minds.build_cohort, \n \
+            then please make sure that the output_dir is correct."
+        )
 
     MAX_WORKERS = threads
-    case_ids = cohort.index.tolist()
-    case_submitter_ids = cohort.values.tolist()
-
     gdc_download = GDCFileDownloader(
         output_dir,
         MAX_WORKERS=MAX_WORKERS,
     )
-    gdc_download.process_cases(
-        case_ids=case_ids,
-        case_submitter_ids=case_submitter_ids,
-    )
+    gdc_download.process_cases()
 
-    post_processor = PostProcessor(output_dir, case_ids, case_submitter_ids)
-    post_processor.rename_files()
-
-    # idc_download = IDCFileDownloader(output_dir)
-    # idc_download.process_cases(case_submitter_ids=case_submitter_ids)
-
-    tcia_download = TCIAFileDownloader(
-        output_dir,
-        MAX_WORKERS=MAX_WORKERS,
-    )
-    tcia_download.process_cases(case_submitter_ids=case_submitter_ids)
-
-    post_processor.generate_manifest()
+    # tcia_download = TCIAFileDownloader(
+    #     output_dir,
+    #     MAX_WORKERS=MAX_WORKERS,
+    # )
+    # tcia_download.process_cases()
 
 
 def update(skip_download=False):
