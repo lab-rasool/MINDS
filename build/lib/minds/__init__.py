@@ -54,40 +54,48 @@ def query(query):
     return db.execute(query)
 
 
+class Cohort:
+    def __init__(self, data, output_dir):
+        self.data = data
+        self.output_dir = output_dir
+        self.manifest_file = os.path.join(output_dir, "manifest.json")
+
+    def generate_manifest(self):
+        # Assuming Aggregator logic is implemented here or elsewhere
+        aggregator = Aggregator(self.data, self.output_dir)
+        aggregator.generate_manifest()
+
+    def download(self, threads=4):
+        if not os.path.exists(self.manifest_file):
+            raise FileNotFoundError(
+                f"No manifest file found in {self.output_dir}. Please run generate_manifest first."
+            )
+
+        # Download files for the cohort
+        self._download_gdc_files(threads)
+        self._download_tcia_files(threads)
+
+    def _download_gdc_files(self, threads):
+        gdc_downloader = GDCFileDownloader(self.output_dir, MAX_WORKERS=threads)
+        gdc_downloader.process_cases()
+
+    def _download_tcia_files(self, threads):
+        tcia_downloader = TCIAFileDownloader(self.output_dir, MAX_WORKERS=threads)
+        tcia_downloader.process_cases()
+
+
 def build_cohort(output_dir, query=None, gdc_cohort=None):
+    """Builds a cohort based on a query or a GDC cohort file and returns a Cohort object."""
     if query:
-        cohort = db.get_minds_cohort(query)
+        cohort_data = db.get_minds_cohort(query)
     elif gdc_cohort:
-        cohort = db.get_gdc_cohort(gdc_cohort)
+        cohort_data = db.get_gdc_cohort(gdc_cohort)
     else:
-        raise ValueError("Either a query or a .tsv gdc_cohort file must be provided")
-    aggregator = Aggregator(cohort, output_dir)
-    aggregator.generate_manifest()
-    cohort.download = lambda: download(output_dir=output_dir)
+        raise ValueError("Either a query or a gdc_cohort file must be provided")
+
+    cohort = Cohort(cohort_data, output_dir)
+    cohort.generate_manifest()
     return cohort
-
-
-def download(output_dir, threads=4):
-
-    if not os.path.exists(f"{output_dir}/manifest.json"):
-        raise ValueError(
-            f"No manifest file found in {output_dir}, please run minds.build_cohort first. \n \
-            If you have already run minds.build_cohort, \n \
-            then please make sure that the output_dir is correct."
-        )
-
-    MAX_WORKERS = threads
-    gdc_download = GDCFileDownloader(
-        output_dir,
-        MAX_WORKERS=MAX_WORKERS,
-    )
-    gdc_download.process_cases()
-
-    # tcia_download = TCIAFileDownloader(
-    #     output_dir,
-    #     MAX_WORKERS=MAX_WORKERS,
-    # )
-    # tcia_download.process_cases()
 
 
 def update(skip_download=False):

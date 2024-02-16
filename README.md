@@ -55,6 +55,8 @@ minds.update()
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
+import minds
+
 # get a list of all the tables in the database
 tables = minds.get_tables()
 
