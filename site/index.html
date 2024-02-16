@@ -1,522 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="None">
-        
-        
-        <link rel="shortcut icon" href="img/favicon.ico">
-        <title>MINDS Documentation</title>
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-        <link href="assets/_mkdocstrings.css" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script> 
-    </head>
-
-    <body class="homepage">
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href=".">MINDS Documentation</a>
-
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
-
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>MINDS Documentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-level="1"><a href="#reference" class="nav-link">Reference</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#app.minds" class="nav-link">minds</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#app.minds.download" class="nav-link">download</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#app.minds.get_cohort" class="nav-link">get_cohort</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#app.minds.get_columns" class="nav-link">get_columns</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#app.minds.get_tables" class="nav-link">get_tables</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#app.minds.query" class="nav-link">query</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> MINDS Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#initial-setup-and-automated-updates">Initial setup and automated updates</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#querying-the-minds-database">Querying the MINDS database</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#downloading-data-from-minds">Downloading data from MINDS</a>
+    </li>
         </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="reference/">Reference</a>
+                </li>
+              </ul>
+      </div>
     </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    </nav>
 
-<h1 id="reference">Reference</h1>
-
-
-<div class="doc doc-object doc-module">
-
-
-
-<a id="app.minds"></a>
-  <div class="doc doc-contents first">
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="app.minds.download" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">download</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Download the files for a given cohort</p>
-<h4 id="app.minds.download--parameters">Parameters</h4>
-<p>cohort : dataframe
-    A df containing unique case_ids and their case_submitter_ids for a query
-output_dir : str
-    The directory where the files should be downloaded</p>
-<h4 id="app.minds.download--returns">Returns</h4>
-<p>None</p>
-
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download the files for a given cohort</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    cohort : dataframe</span>
-<span class="sd">        A df containing unique case_ids and their case_submitter_ids for a query</span>
-<span class="sd">    output_dir : str</span>
-<span class="sd">        The directory where the files should be downloaded</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">MAX_WORKERS</span> <span class="o">=</span> <span class="n">threads</span>
-    <span class="n">case_ids</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">case_submitter_ids</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-
-    <span class="n">gdc_download</span> <span class="o">=</span> <span class="n">GDCFileDownloader</span><span class="p">(</span>
-        <span class="n">output_dir</span><span class="p">,</span>
-        <span class="n">MAX_WORKERS</span><span class="o">=</span><span class="n">MAX_WORKERS</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gdc_download</span><span class="o">.</span><span class="n">process_cases</span><span class="p">(</span>
-        <span class="n">case_ids</span><span class="o">=</span><span class="n">case_ids</span><span class="p">,</span>
-        <span class="n">case_submitter_ids</span><span class="o">=</span><span class="n">case_submitter_ids</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">post_processor</span> <span class="o">=</span> <span class="n">PostProcessor</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">case_ids</span><span class="p">,</span> <span class="n">case_submitter_ids</span><span class="p">)</span>
-    <span class="n">post_processor</span><span class="o">.</span><span class="n">rename_files</span><span class="p">()</span>
-
-    <span class="c1"># idc_download = IDCFileDownloader(output_dir)</span>
-    <span class="c1"># idc_download.process_cases(case_submitter_ids=case_submitter_ids)</span>
-
-    <span class="n">tcia_download</span> <span class="o">=</span> <span class="n">TCIAFileDownloader</span><span class="p">(</span>
-        <span class="n">output_dir</span><span class="p">,</span>
-        <span class="n">MAX_WORKERS</span><span class="o">=</span><span class="n">MAX_WORKERS</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">tcia_download</span><span class="o">.</span><span class="n">process_cases</span><span class="p">(</span><span class="n">case_submitter_ids</span><span class="o">=</span><span class="n">case_submitter_ids</span><span class="p">)</span>
-
-    <span class="n">post_processor</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">MINDS Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
 </div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="app.minds.get_cohort" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_cohort</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Query the database and return the case ids and case_submitter_ids as two lists</p>
-<h4 id="app.minds.get_cohort--parameters">Parameters</h4>
-<p>query_string : str
-    The query string to be executed on the database</p>
-<h4 id="app.minds.get_cohort--returns">Returns</h4>
-<p>dataframe
-    A df containing unique case_ids and their case_submitter_ids for a query</p>
-
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_cohort</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Query the database and return the case ids and case_submitter_ids as two lists</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    query_string : str</span>
-<span class="sd">        The query string to be executed on the database</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    dataframe</span>
-<span class="sd">        A df containing unique case_ids and their case_submitter_ids for a query</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_cohort</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="app.minds.get_columns" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Get the list of columns in a table</p>
-<h4 id="app.minds.get_columns--parameters">Parameters</h4>
-<p>table : str
-    The name of the table</p>
-<h4 id="app.minds.get_columns--returns">Returns</h4>
-<p>list
-    A list of columns in the table</p>
-
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the list of columns in a table</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    table : str</span>
-<span class="sd">        The name of the table</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        A list of columns in the table</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="app.minds.get_tables" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_tables</span><span class="p">()</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Get the list of tables in the database</p>
-<h4 id="app.minds.get_tables--returns">Returns</h4>
-<p>list
-    A list of tables in the database</p>
-
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_tables</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the list of tables in the database</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        A list of tables in the database</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_tables</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="app.minds.query" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></code>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Query the database and return the result as a pandas dataframe</p>
-<h4 id="app.minds.query--parameters">Parameters</h4>
-<p>query_string : str
-    The query string to be executed on the database</p>
-<h4 id="app.minds.query--returns">Returns</h4>
-<p>pandas.DataFrame
-    The result of the query</p>
-
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Query the database and return the result as a pandas dataframe</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    query_string : str</span>
-<span class="sd">        The query string to be executed on the database</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    pandas.DataFrame</span>
-<span class="sd">        The result of the query</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-          </details>
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-</div></div>
-            </div>
-        </div>
-
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="js/jquery-3.6.0.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script>
-            var base_url = ".",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="js/base.js"></script>
-        <script src="search/main.js"></script>
-
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-                <p>From here you can search these documents. Enter your search terms below.</p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="welcome-to-the-minds-database-documentation">Welcome to the MINDS Database Documentation</h1>
+<html>
+<head>
+    <style>
+        .container {
+            display: flex;
+            align-items: center; /* Aligns items vertically in the center */
+        }
+        .text {
+            margin-left: 20px; /* Adjusts spacing between the logo and the text */
+            font-size: 40px; /* Adjust the font size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p align="left">
+        <img src="assets\logo.png" alt="Logo" width="250"/>
+    </p>
+    <div class="text">
+        <span style="display:block;font-weight:bold;font-size:40px;"><u>M</u>ultimodal <u>I</u>ntegration of O<u>n</u>cology <u>D</u>ata <u>S</u>ystem</span>
     </div>
 </div>
+</body>
+</html>
 
-    </body>
+<p>MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.</p>
+<h2 id="installation">Installation</h2>
+<p>Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system <a href="https://docs.docker.com/get-docker/">here</a>. Next, you will need to pull the MySQL docker image and run a container with the following command.</p>
+<p><strong>NOTE:</strong> Please replace <code>my-secret-pw</code> with your desired password and <code>port</code> with the port you want to use to access the database. The default port for MySQL is 3306. The following command will not work until you replace <code>port</code> with a valid port number.</p>
+<pre><code class="language-bash">docker run -d --name minds -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=minds -p port:3306 mysql
+</code></pre>
+<p>Finally, to install the MINDS python package use the following pip command:</p>
+<pre><code class="language-bash">pip install git+https://github.com/lab-rasool/MINDS.git
+</code></pre>
+<p>After installing the package, please create a .env file in the root directory of the project with the following variables:</p>
+<pre><code class="language-bash">HOST=localhost
+PORT=3306
+DB_USER=root
+PASSWORD=my-secret-pw
+DATABASE=minds   
+</code></pre>
+<h2 id="usage">Usage</h2>
+<h3 id="initial-setup-and-automated-updates">Initial setup and automated updates</h3>
+<p>If you have locally setup the MINDS database, then you will need to populate it with data. To do this, or to update the database with the latest data, you can use the following command:</p>
+<pre><code class="language-python"># Import the minds package
+import minds
+
+# Update the database with the latest data
+minds.update()
+</code></pre>
+<h3 id="querying-the-minds-database">Querying the MINDS database</h3>
+<p>The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.</p>
+<pre><code class="language-python"># get a list of all the tables in the database
+tables = minds.get_tables()
+
+# get a list of all the columns in a table
+columns = minds.get_columns(&quot;clinical&quot;)
+
+# Query the database directly
+query = &quot;SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD'&quot;
+df = minds.query(query)
+</code></pre>
+<h3 id="downloading-data-from-minds">Downloading data from MINDS</h3>
+<pre><code class="language-python"># Generate a cohort to download
+cohort = minds.get_cohort(query)
+# Set the output directory
+save_loc = &quot;/data/TCGA-LUAD&quot;
+
+# Download the data 
+minds.download(cohort=cohort, output_dir=save_loc)
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="reference/" class="btn btn-neutral float-right" title="Reference">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="reference/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
 </html>
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2024-02-12 23:31:26.149745+00:00
+Build Date UTC : 2024-02-16 16:33:46.155182+00:00
 -->
