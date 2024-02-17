@@ -284,7 +284,7 @@ class TCIAFileDownloader:
 
 class IDCFileDownloader:
     def __init__(self, save_directory):
-        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v4"
+        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v1"
         self.save_directory = save_directory
 
     @retry(tries=5, delay=2, backoff=2)
