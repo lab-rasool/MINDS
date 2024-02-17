@@ -86,7 +86,7 @@ df = minds.query(query)
 query_cohort = minds.build_cohort(query=query, output_dir="./data")
 
 # or you can now directly supply a cohort from GDC
-gdc_cohort = minds.build_cohort(cohort_file="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
+gdc_cohort = minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
 
 # To download the data from the a cohort, simply call the download method for the cohort 
 # for example, downloading the gdc_cohort

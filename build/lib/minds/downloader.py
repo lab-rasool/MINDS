@@ -166,7 +166,7 @@ class GDCFileDownloader:
 
         :param case_ids: List of case IDs to process.
         """
-        # self.multi_download()
+        self.multi_download()
         self.multi_extract()
         self.organize_files()
         self.post_process_cleanup()
