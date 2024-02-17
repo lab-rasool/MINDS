@@ -228,10 +228,35 @@ class TCIAFileDownloader:
         with open(self.MANIFEST_FILE, "r") as file:
             manifest = json.load(file)
 
+        modalities = [
+            "MG",
+            "MR",
+            "CT",
+            "SEG",
+            "RTSTRUCT",
+            "CR",
+            "SR",
+            "US",
+            "PT",
+            "DX",
+            "RTDOSE",
+            "RTPLAN",
+            "PR",
+            "REG",
+            "RWV",
+            "NM",
+            "KO",
+            "FUSION",
+            "OT",
+            "XA",
+            "SC",
+            "RF",
+        ]
+
         for entry in manifest:
             patient_id = entry.get("PatientID")
-            if "CT" in entry:
-                for ct_entry in entry["CT"]:
+            if modalities in entry:
+                for ct_entry in entry[modalities]:
                     series_instance_uid = ct_entry.get("SeriesInstanceUID")
                     modality = ct_entry.get("Modality")
                     if series_instance_uid and patient_id and modality:
@@ -259,7 +284,7 @@ class TCIAFileDownloader:
 
 class IDCFileDownloader:
     def __init__(self, save_directory):
-        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v1"
+        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v4"
         self.save_directory = save_directory
 
     @retry(tries=5, delay=2, backoff=2)

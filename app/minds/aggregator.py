@@ -105,7 +105,7 @@ class Aggregator:
     def tcia_files(self, case_submitter_id):
         options = {}
         options["PatientID"] = case_submitter_id
-        base_url = "https://services.cancerimagingarchive.net/nbia-api/services/v1/"
+        base_url = "https://services.cancerimagingarchive.net/nbia-api/services/v4/"
         url = base_url + "getSeries"
         try:
             data = requests.get(url, params=options)
