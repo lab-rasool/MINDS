@@ -61,7 +61,6 @@ class Cohort:
         self.manifest_file = os.path.join(output_dir, "manifest.json")
 
     def generate_manifest(self):
-        # Assuming Aggregator logic is implemented here or elsewhere
         aggregator = Aggregator(self.data, self.output_dir)
         aggregator.generate_manifest()
 

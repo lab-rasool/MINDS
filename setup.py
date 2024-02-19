@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md") as f:
     long_description = f.read()
@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="minds",
-    version="0.1",
+    version="0.0.1",
     description="A package for downloading and processing data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),

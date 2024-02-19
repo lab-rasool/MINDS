@@ -96,3 +96,11 @@ gdc_cohort.download()
       primaryClass={cs.LG}
 }
 ```
+
+## Contributing
+
+We welcome contributions from the community. If you would like to contribute to the MINDS project, please read our [contributing guidelines](CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
