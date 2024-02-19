@@ -88,12 +88,13 @@ class Aggregator:
         output_format = "&format=json"
         GET_SERIES_BY_PATIENT_ID = "getSeries?PatientID="
         url = self.TCIA_BASE_URL + GET_SERIES_BY_PATIENT_ID + patient_id + output_format
+        url = url[0]
         try:
             response = requests.get(url)
             if response.status_code == 200:
                 return response.json()
         except Exception as e:
-            print(e)
+            print(f"Error in TCIA request: {e}")
             return None
 
     def add_or_update_entry_all_modalities(self, patient_id, modality_data, modality):

@@ -83,7 +83,7 @@ class Cohort:
         tcia_downloader.process_cases()
 
 
-def build_cohort(output_dir, query=None, gdc_cohort=None):
+def build_cohort(output_dir, query=None, gdc_cohort=None, manifest=None):
     """Builds a cohort based on a query or a GDC cohort file and returns a Cohort object."""
     if query:
         cohort_data = db.get_minds_cohort(query)
@@ -93,7 +93,8 @@ def build_cohort(output_dir, query=None, gdc_cohort=None):
         raise ValueError("Either a query or a gdc_cohort file must be provided")
 
     cohort = Cohort(cohort_data, output_dir)
-    cohort.generate_manifest()
+    if manifest is None:
+        cohort.generate_manifest()
     return cohort
 
 

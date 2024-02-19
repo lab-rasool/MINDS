@@ -255,14 +255,15 @@ class TCIAFileDownloader:
 
         for entry in manifest:
             patient_id = entry.get("PatientID")
-            if modalities in entry:
-                for ct_entry in entry[modalities]:
-                    series_instance_uid = ct_entry.get("SeriesInstanceUID")
-                    modality = ct_entry.get("Modality")
-                    if series_instance_uid and patient_id and modality:
-                        self.move_series_folder(
-                            series_instance_uid, patient_id, modality
-                        )
+            for modality in modalities:
+                if modality in entry:
+                    # Process each series under the modality
+                    for series in entry[modality]:
+                        series_instance_uid = series.get("SeriesInstanceUID")
+                        if series_instance_uid:
+                            self.move_series_folder(
+                                series_instance_uid, patient_id, modality
+                            )
 
     def move_series_folder(self, series_instance_uid, patient_id, modality):
         source_path = os.path.join(self.output_dir, series_instance_uid)
@@ -270,13 +271,20 @@ class TCIAFileDownloader:
             self.output_dir, "raw", patient_id, modality, series_instance_uid
         )
 
+        if not os.path.exists(source_path):
+            logging.warning(f"Series not found: {series_instance_uid}")
+            return
+
         os.makedirs(dest_path, exist_ok=True)
-        shutil.move(source_path, dest_path)
+        # Ensure the destination directory does not already contain a directory with the same name
+        if os.path.exists(os.path.join(dest_path, series_instance_uid)):
+            logging.warning(f"Series already exists: {series_instance_uid}")
+        else:
+            shutil.move(source_path, dest_path)
 
     def process_cases(self):
         with open(self.MANIFEST_FILE, "r") as f:
             manifest = json.load(f)
-
         series_instance_uids = self.find_values("SeriesInstanceUID", manifest)
         self.downloadSeries(series_instance_uids, path=self.output_dir)
         self.find_and_process_series()
