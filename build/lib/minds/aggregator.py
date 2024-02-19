@@ -28,7 +28,7 @@ class Aggregator:
         self.MAX_WORKERS = max_workers
         self.GDC_BASE_URL = "https://api.gdc.cancer.gov/"
         self.TCIA_BASE_URL = (
-            "https://services.cancerimagingarchive.net/nbia-api/services/v1/"
+            "https://services.cancerimagingarchive.net/services/v4/TCIA/query/"
         )
         self.manifest_path = os.path.join(self.DATA_DIR, "manifest.json")
         self.structured_manifest_all_modalities = []
