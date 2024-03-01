@@ -55,6 +55,8 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#please-cite-our-work">Please cite our work</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -113,7 +115,8 @@
 </body>
 </html>
 
-<p>MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.</p>
+<p>MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.</p>
 <h2 id="installation">Installation</h2>
 <p>Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system <a href="https://docs.docker.com/get-docker/">here</a>. Next, you will need to pull the MySQL docker image and run a container with the following command.</p>
 <p><strong>NOTE:</strong> Please replace <code>my-secret-pw</code> with your desired password and <code>port</code> with the port you want to use to access the database. The default port for MySQL is 3306. The following command will not work until you replace <code>port</code> with a valid port number.</p>
@@ -140,24 +143,39 @@ minds.update()
 </code></pre>
 <h3 id="querying-the-minds-database">Querying the MINDS database</h3>
 <p>The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.</p>
-<pre><code class="language-python"># get a list of all the tables in the database
+<pre><code class="language-python">import minds
+
+# get a list of all the tables in the database
 tables = minds.get_tables()
 
 # get a list of all the columns in a table
 columns = minds.get_columns(&quot;clinical&quot;)
 
 # Query the database directly
-query = &quot;SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD'&quot;
+query = &quot;SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10&quot;
 df = minds.query(query)
 </code></pre>
 <h3 id="downloading-data-from-minds">Downloading data from MINDS</h3>
-<pre><code class="language-python"># Generate a cohort to download
-cohort = minds.get_cohort(query)
-# Set the output directory
-save_loc = &quot;/data/TCGA-LUAD&quot;
+<pre><code class="language-python"># Generate a cohort to download from query
+query_cohort = minds.build_cohort(query=query, output_dir=&quot;./data&quot;)
 
-# Download the data 
-minds.download(cohort=cohort, output_dir=save_loc)
+# or you can now directly supply a cohort from GDC
+gdc_cohort = minds.build_cohort(gdc_cohort=&quot;cohort_Unsaved_Cohort.2024-02-12.tsv&quot;, output_dir=&quot;./data&quot;)
+
+# To download the data from the a cohort, simply call the download method for the cohort 
+# for example, downloading the gdc_cohort
+gdc_cohort.download()
+</code></pre>
+<h2 id="please-cite-our-work">Please cite our work</h2>
+<p><strong>Note</strong>: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:</p>
+<pre><code class="language-bibtex">@misc{tripathi2023building,
+      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
+      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
+      year={2023},
+      eprint={2310.01438},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 </code></pre>
               
             </div>
@@ -207,5 +225,5 @@ minds.download(cohort=cohort, output_dir=save_loc)
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2024-03-01 19:12:00.505246+00:00
+Build Date UTC : 2024-03-01 19:20:24.757191+00:00
 -->
