@@ -127,7 +127,7 @@
 
 
 <h2 id="app.minds.build_cohort" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -138,7 +138,8 @@
 
           <details class="quote">
             <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">87</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">86</span>
+<span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
 <span class="normal">90</span>
@@ -149,7 +150,7 @@
 <span class="normal">95</span>
 <span class="normal">96</span>
 <span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds a cohort based on a query or a GDC cohort file and returns a Cohort object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
         <span class="n">cohort_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_minds_cohort</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -159,7 +160,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either a query or a gdc_cohort file must be provided&quot;</span><span class="p">)</span>
 
     <span class="n">cohort</span> <span class="o">=</span> <span class="n">Cohort</span><span class="p">(</span><span class="n">cohort_data</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
-    <span class="n">cohort</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">manifest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cohort</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">cohort</span>
 </code></pre></div></td></tr></table></div>
           </details>
