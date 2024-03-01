@@ -29,6 +29,7 @@
 </html>
 
 MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
 ## Installation
 
@@ -75,6 +76,8 @@ minds.update()
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
+import minds
+
 # get a list of all the tables in the database
 tables = minds.get_tables()
 
@@ -82,18 +85,35 @@ tables = minds.get_tables()
 columns = minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD'"
+query = "SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
 df = minds.query(query)
 ```
 
 ### Downloading data from MINDS
 
 ```python
-# Generate a cohort to download
-cohort = minds.get_cohort(query)
-# Set the output directory
-save_loc = "/data/TCGA-LUAD"
+# Generate a cohort to download from query
+query_cohort = minds.build_cohort(query=query, output_dir="./data")
 
-# Download the data 
-minds.download(cohort=cohort, output_dir=save_loc)
+# or you can now directly supply a cohort from GDC
+gdc_cohort = minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
+
+# To download the data from the a cohort, simply call the download method for the cohort 
+# for example, downloading the gdc_cohort
+gdc_cohort.download()
+```
+
+## Please cite our work
+
+**Note**: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:
+
+```bibtex
+@misc{tripathi2023building,
+      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
+      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
+      year={2023},
+      eprint={2310.01438},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 ```
