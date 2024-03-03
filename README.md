@@ -84,16 +84,18 @@ gdc_cohort.download()
 
 ## Please cite our work
 
-**Note**: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:
-
 ```bibtex
-@misc{tripathi2023building,
-      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
-      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
-      year={2023},
-      eprint={2310.01438},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@Article{s24051634,
+    AUTHOR = {Tripathi, Aakash and Waqas, Asim and Venkatesan, Kavya and Yilmaz, Yasin and Rasool, Ghulam},
+    TITLE = {Building Flexible, Scalable, and Machine Learning-Ready Multimodal Oncology Datasets},
+    JOURNAL = {Sensors},
+    VOLUME = {24},
+    YEAR = {2024},
+    NUMBER = {5},
+    ARTICLE-NUMBER = {1634},
+    URL = {https://www.mdpi.com/1424-8220/24/5/1634},
+    ISSN = {1424-8220},
+    DOI = {10.3390/s24051634}
 }
 ```
 
