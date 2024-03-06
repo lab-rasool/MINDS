@@ -14,8 +14,10 @@ logging.basicConfig(
 
 class MINDSUpdater:
     def __init__(self):
-        self.CLINICAL_URL = "https://portal.gdc.cancer.gov/auth/api/clinical_tar"
-        self.BIOSPECIMEN_URL = "https://portal.gdc.cancer.gov/auth/api/biospecimen_tar"
+        self.CLINICAL_URL = "https://portal.gdc.cancer.gov/auth/api/v0/clinical_tar"
+        self.BIOSPECIMEN_URL = (
+            "https://portal.gdc.cancer.gov/auth/api/v0/biospecimen_tar"
+        )
         self.session = requests.Session()
         self.today = datetime.datetime.today().strftime("%Y-%m-%d")
         self.clinical_tar_file = f"clinical.cases_selection.{self.today}.tar.gz"
