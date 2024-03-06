@@ -7,6 +7,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
+pd.set_option("future.no_silent_downcasting", True)
+
 
 class DatabaseManager:
     def __init__(self, dotenv_path=".env"):
