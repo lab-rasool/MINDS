@@ -29,7 +29,7 @@ pip install git+https://github.com/lab-rasool/MINDS.git
 After installing the package, please create a .env file in the root directory of the project with the following variables:
 
 ```bash
-HOST=localhost
+HOST=127.0.0.1
 PORT=3306
 DB_USER=root
 PASSWORD=my-secret-pw
