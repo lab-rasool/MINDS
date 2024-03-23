@@ -51,7 +51,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#querying-the-minds-database">Querying the MINDS database</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#downloading-data-from-minds">Downloading data from MINDS</a>
+    <li class="toctree-l3"><a class="reference internal" href="#building-the-cohort-and-downloading-the-data">Building the cohort and downloading the data</a>
     </li>
         </ul>
     </li>
@@ -155,16 +155,19 @@ columns = minds.get_columns(&quot;clinical&quot;)
 query = &quot;SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10&quot;
 df = minds.query(query)
 </code></pre>
-<h3 id="downloading-data-from-minds">Downloading data from MINDS</h3>
+<h3 id="building-the-cohort-and-downloading-the-data">Building the cohort and downloading the data</h3>
 <pre><code class="language-python"># Generate a cohort to download from query
 query_cohort = minds.build_cohort(query=query, output_dir=&quot;./data&quot;)
 
 # or you can now directly supply a cohort from GDC
 gdc_cohort = minds.build_cohort(gdc_cohort=&quot;cohort_Unsaved_Cohort.2024-02-12.tsv&quot;, output_dir=&quot;./data&quot;)
 
-# To download the data from the a cohort, simply call the download method for the cohort 
-# for example, downloading the gdc_cohort
-gdc_cohort.download()
+# to get the cohort details
+cohort.stats()
+
+# to download the data from the cohort to the output directory specified
+# you can also specify the number of threads to use and the modalities to exclude or include
+cohort.download(threads=12, exclude=[&quot;Slide Image&quot;])
 </code></pre>
 <h2 id="please-cite-our-work">Please cite our work</h2>
 <p><strong>Note</strong>: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:</p>
@@ -225,5 +228,5 @@ gdc_cohort.download()
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2024-03-06 18:51:59.323789+00:00
+Build Date UTC : 2024-03-23 20:18:16.865946+00:00
 -->
