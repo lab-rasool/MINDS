@@ -7,24 +7,31 @@ import re
 import shutil
 import tarfile
 import zipfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import chain
 from urllib.parse import urlparse
 
 import requests
 from google.cloud import storage
 from retry import retry
-from tqdm import tqdm
-from tqdm.contrib.concurrent import thread_map
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.progress import Progress
+from rich.traceback import install
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()],
+    level=logging.WARNING,
+    format="%(message)s",
+    handlers=[RichHandler(rich_tracebacks=True)],
 )
+
+install()
+
+console = Console()
 
 
 class GDCFileDownloader:
-    def __init__(self, DATA_DIR, MAX_WORKERS):
+    def __init__(self, DATA_DIR, MAX_WORKERS, **kwargs):
         self.BASE_URL = "https://api.gdc.cancer.gov/"
         self.DATA_ENDPOINT = "data"
         self.DATA_DIR = DATA_DIR
@@ -32,6 +39,8 @@ class GDCFileDownloader:
         self.MANIFEST_FILE = os.path.join(DATA_DIR, "manifest.json")
         with open(self.MANIFEST_FILE, "r") as f:
             self.manifest = json.load(f)
+        self.include = kwargs.get("include", [])
+        self.exclude = kwargs.get("exclude", [])
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def download_files(self, file_uuids, case_id):
@@ -42,7 +51,7 @@ class GDCFileDownloader:
                 data=json.dumps({"ids": [file_uuids]}),
                 headers={"Content-Type": "application/json"},
             )
-            response_head_cd = response.headers["Content-Disposition"]
+            response_head_cd = response.headers.get("Content-Disposition")
 
             if response_head_cd:
                 file_name = re.findall("filename=(.+)", response_head_cd)[0]
@@ -55,7 +64,9 @@ class GDCFileDownloader:
                     f"Content-Disposition header missing for case ID: {case_id}"
                 )
         except Exception as e:
-            logging.error(f"Failed to download files for case ID {case_id}: {e}")
+            logging.error(
+                f"Failed to download files for case ID {case_id}: {e}", exc_info=True
+            )
 
     def download_files_for_patient(self, patient_data):
         gdc_case_id = patient_data["gdc_case_id"]
@@ -63,6 +74,13 @@ class GDCFileDownloader:
         for data_type, files in patient_data.items():
             if data_type in ["PatientID", "gdc_case_id"]:
                 continue
+
+            if self.include and data_type not in self.include:
+                continue
+
+            if self.exclude and data_type in self.exclude:
+                continue
+
             file_uuids = [file["id"] for file in files if "id" in file]
             self.download_files(file_uuids, gdc_case_id)
 
@@ -73,7 +91,7 @@ class GDCFileDownloader:
                 filepath = os.path.join(self.DATA_DIR, filename)
                 try:
                     with tarfile.open(filepath, mode) as tar:
-                        tar.extractall(path=self.DATA_DIR)
+                        tar.extractall(filter="data", path=self.DATA_DIR)
                 except EOFError as e:
                     logging.error(f"EOF Error: {e}. Check gdc.log for case_id details.")
                 except PermissionError as e:
@@ -91,6 +109,12 @@ class GDCFileDownloader:
 
                 # skip if there is no "id"
                 if not any("id" in file for file in files):
+                    continue
+
+                if self.include and data_type not in self.include:
+                    continue
+
+                if self.exclude and data_type in self.exclude:
                     continue
 
                 for file in files:
@@ -127,24 +151,31 @@ class GDCFileDownloader:
 
     def multi_download(self):
         """
-        Concurrently download files for all patients in the manifest.
+        Concurrently download files for all patients in the manifest using rich progress bar.
         """
-        thread_map(
-            self.download_files_for_patient,
-            self.manifest,
-            max_workers=self.MAX_WORKERS,
-        )
+        with Progress() as progress:
+            with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                task = progress.add_task(
+                    "Downloading files from GDC", total=len(self.manifest)
+                )
+                futures = {
+                    executor.submit(
+                        self.download_files_for_patient, patient_data
+                    ): patient_data
+                    for patient_data in self.manifest
+                }
+                # for patient_data in self.manifest:
+                #     executor.submit(self.download_files_for_patient, patient_data)
+                for future in as_completed(futures):
+                    progress.update(task, advance=1)
 
     def multi_extract(self):
         """
         Concurrently extract all .gz and .tar files in the data directory.
         """
-        thread_map(
-            lambda ext, mode: self.extract_files(ext, mode),
-            [".tar.gz"],
-            ["r:gz"],
-            max_workers=self.MAX_WORKERS,
-        )
+        with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+            for ext, mode in [(".tar.gz", "r:gz"), (".tar", "r:")]:
+                executor.submit(self.extract_files, ext, mode)
 
     def post_process_cleanup(self):
         """
@@ -173,10 +204,12 @@ class GDCFileDownloader:
 
 
 class TCIAFileDownloader:
-    def __init__(self, output_dir, MAX_WORKERS):
+    def __init__(self, output_dir, MAX_WORKERS, **kwargs):
         self.output_dir = output_dir
         self.MAX_WORKERS = MAX_WORKERS
         self.MANIFEST_FILE = os.path.join(output_dir, "manifest.json")
+        self.include = kwargs.get("include", [])
+        self.exclude = kwargs.get("exclude", [])
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def downloadSeries(
@@ -190,22 +223,27 @@ class TCIAFileDownloader:
         base_url = "https://services.cancerimagingarchive.net/nbia-api/services/v1/"
         downloadOptions = "getImage?NewFileNames=Yes&SeriesInstanceUID="
 
-        try:
-            for x in tqdm(series_data, desc="Downloading series from TCIA"):
-                seriesUID = x
-                pathTmp = path + "/" + seriesUID
-                data_url = base_url + downloadOptions + seriesUID
-                if not os.path.isdir(pathTmp):
-                    data = requests.get(data_url)
-                    if data.status_code == 200:
-                        file = zipfile.ZipFile(io.BytesIO(data.content))
-                        file.extractall(path=pathTmp)
-                        success += 1
-                        if number > 0:
-                            if success == number:
-                                break
-        except Exception as e:
-            print(e)
+        with Progress() as progress:
+            try:
+                task = progress.add_task(
+                    "Downloading series from TCIA", total=len(series_data)
+                )
+                for x in series_data:
+                    seriesUID = x
+                    pathTmp = path + "/" + seriesUID
+                    data_url = base_url + downloadOptions + seriesUID
+                    if not os.path.isdir(pathTmp):
+                        data = requests.get(data_url)
+                        if data.status_code == 200:
+                            file = zipfile.ZipFile(io.BytesIO(data.content))
+                            file.extractall(path=pathTmp)
+                            success += 1
+                            if number > 0:
+                                if success == number:
+                                    break
+                    progress.update(task, advance=1)
+            except Exception as e:
+                logging.error(f"Failed to download series {seriesUID}: {e}")
 
     # Function to recursively search for keys in nested dictionaries and lists
     def find_values(self, key, dictionary):
@@ -513,11 +551,11 @@ class IDCFileDownloader:
                 manifest_data.append(new_entry)
                 manifest_dict[patient_id] = new_entry
 
-        thread_map(
-            update_single_entry,
-            merged_data,
-            max_workers=self.MAX_WORKERS,
-        )
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=self.MAX_WORKERS
+        ) as executor:
+            for patient_data in merged_data:
+                executor.submit(update_single_entry, patient_data)
 
         # Save the updated manifest back to disk
         with open(manifest_path, "w") as f:
@@ -534,11 +572,10 @@ class IDCFileDownloader:
 
     def process_cases(self, case_submitter_ids):
         # Generate merged_data for all cases
-        all_merged_data = thread_map(
-            self.generate_merged_data_for_case,
-            case_submitter_ids,
-            max_workers=self.MAX_WORKERS,
-        )
+        with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+            all_merged_data = list(
+                executor.map(self.generate_merged_data_for_case, case_submitter_ids)
+            )
 
         all_merged_data = list(chain.from_iterable(all_merged_data))
 

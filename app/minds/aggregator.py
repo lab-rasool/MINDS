@@ -1,9 +1,10 @@
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from retry import retry
-from tqdm.contrib.concurrent import thread_map
+from rich.progress import Progress
 
 
 def numpy_to_python(data):
@@ -20,7 +21,7 @@ def numpy_to_python(data):
 
 
 class Aggregator:
-    def __init__(self, cohort, output_dir, max_workers=4):
+    def __init__(self, cohort, output_dir, max_workers=6):
         self.cohort = cohort
         self.case_ids = self.cohort.index.to_list()
         self.case_submitter_ids = self.cohort.values.tolist()
@@ -136,35 +137,61 @@ class Aggregator:
         ]
 
         for patient_data in tcia_response:
-            if patient_data:
-                for item in patient_data:
-                    if item["Modality"] in tcia_modalities:
-                        modality_data = {
-                            k: item[k]
-                            for k in item
-                            if k != "PatientID" and k != "Modality"
-                        }
-                        self.add_or_update_entry_all_modalities(
-                            item["PatientID"], modality_data, item["Modality"]
-                        )
+            for item in patient_data:
+                modality = item.get("Modality")
+                if modality in tcia_modalities:
+                    modality_data = {
+                        k: item[k] for k in item if k != "PatientID" and k != "Modality"
+                    }
+                    self.add_or_update_entry_all_modalities(
+                        item["PatientID"], modality_data, modality
+                    )
 
     def generate_manifest(self):
-        gdc_responses = thread_map(
-            self.gdc_files,
-            self.case_ids,
-            self.case_submitter_ids,
-            max_workers=self.MAX_WORKERS,
-        )
-        gdc_responses = numpy_to_python(gdc_responses)
-        with open(self.manifest_path, "w") as f:
-            json.dump(gdc_responses, f, indent=4)
+        with Progress() as progress:
+            with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                task = progress.add_task(
+                    "Generating manifest...", total=len(self.case_ids)
+                )
+                futures = {
+                    executor.submit(self.gdc_files, case_id, case_submitter_id): case_id
+                    for case_id, case_submitter_id in zip(
+                        self.case_ids, self.case_submitter_ids
+                    )
+                }
 
-        tcia_response = thread_map(
-            self.tcia_files,
-            self.case_submitter_ids,
-            max_workers=self.MAX_WORKERS,
-        )
-        self.format_tcia_response(tcia_response)
+                all_gdc_responses = []
+                for future in as_completed(futures):
+                    progress.update(task, advance=1)
+                    gdc_response = future.result()
+                    all_gdc_responses.append(gdc_response)
+
+        processed_responses = [
+            numpy_to_python(response) for response in all_gdc_responses
+        ]
+
+        with open(self.manifest_path, "w") as f:
+            json.dump(processed_responses, f, indent=4)
+
+        with Progress() as progress:
+            with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                task = progress.add_task(
+                    "Aggregating data from other sources...",
+                    total=len(self.case_submitter_ids),
+                )
+                futures = {
+                    executor.submit(self.tcia_files, patient_id): patient_id
+                    for patient_id in self.case_submitter_ids
+                }
+
+                all_tcia_responses = []
+                for future in as_completed(futures):
+                    progress.update(task, advance=1)
+                    tcia_response = future.result()
+                    all_tcia_responses.append(tcia_response)
+
+        self.format_tcia_response(all_tcia_responses)
+
         with open(self.manifest_path, "r") as f:
             existing_manifest = json.load(f)
 
