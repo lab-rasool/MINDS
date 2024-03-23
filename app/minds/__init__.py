@@ -1,4 +1,8 @@
+import json
 import os
+
+from rich.console import Console
+from rich.table import Table
 
 from .aggregator import Aggregator
 from .database import DatabaseManager
@@ -64,22 +68,81 @@ class Cohort:
         aggregator = Aggregator(self.data, self.output_dir)
         aggregator.generate_manifest()
 
-    def download(self, threads=4):
+    def download(self, threads: int = 4, include: list = None, exclude: list = None):
         if not os.path.exists(self.manifest_file):
             raise FileNotFoundError(
                 f"No manifest file found in {self.output_dir}. Please run generate_manifest first."
             )
 
-        # Download files for the cohort
-        self._download_gdc_files(threads)
+        self._download_gdc_files(threads, include=include, exclude=exclude)
         self._download_tcia_files(threads)
 
-    def _download_gdc_files(self, threads):
-        gdc_downloader = GDCFileDownloader(self.output_dir, MAX_WORKERS=threads)
+    def include(self, modalities):
+        print(f"Only including {modalities} modalities in download")
+
+    def stats(self):
+        """Prints the statistics of the cohort in terms of file count and total size
+
+        Returns:
+            dict: A dictionary containing the statistics of the cohort
+        """
+        with open(self.manifest_file, "r") as f:
+            manifest = json.load(f)
+
+        stats_dict = {}
+        for entry in manifest:
+            for key, value in entry.items():
+                if isinstance(value, list):
+                    patient_size = 0
+                    for file in value:
+                        try:
+                            patient_size += file["file_size"]
+                        except Exception as e:
+                            pass
+
+                    if key not in stats_dict:
+                        stats_dict[key] = {
+                            "file_count": len(value),
+                            "total_size": patient_size,
+                        }
+                    else:
+                        stats_dict[key]["file_count"] += len(value)
+                        stats_dict[key]["total_size"] += patient_size
+
+        # Sort the dictionary by total size in descending order
+        sorted_stats = sorted(
+            stats_dict.items(), key=lambda x: x[1]["total_size"], reverse=True
+        )
+
+        console = Console()
+        table = Table(show_header=True, header_style="bold green")
+        table.add_column("Modality")
+        table.add_column("File Count")
+        table.add_column("Total Size")
+
+        for key, value in sorted_stats:
+            size = value["total_size"]
+            if size > 1024 * 1024 * 1024:
+                size = f"{size / (1024 * 1024 * 1024):.2f} GB"
+            elif size > 1024 * 1024:
+                size = f"{size / (1024 * 1024):.2f} MB"
+            else:
+                size = f"{size / 1024:.2f} KB"
+            table.add_row(key, str(value["file_count"]), size)
+
+        console.print(table)
+        return dict(sorted_stats)
+
+    def _download_gdc_files(self, threads, include=None, exclude=None):
+        gdc_downloader = GDCFileDownloader(
+            self.output_dir, MAX_WORKERS=threads, include=include, exclude=exclude
+        )
         gdc_downloader.process_cases()
 
-    def _download_tcia_files(self, threads):
-        tcia_downloader = TCIAFileDownloader(self.output_dir, MAX_WORKERS=threads)
+    def _download_tcia_files(self, threads, include=None, exclude=None):
+        tcia_downloader = TCIAFileDownloader(
+            self.output_dir, MAX_WORKERS=threads, include=include, exclude=exclude
+        )
         tcia_downloader.process_cases()
 
 

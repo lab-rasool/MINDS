@@ -34,3 +34,4 @@ python-dotenv
 sqlalchemy
 pymysql
 cryptography
+rich

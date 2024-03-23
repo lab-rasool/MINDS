@@ -1,6 +1,7 @@
 .env
-*.ipynb
-\data
-__pycache__
 .vscode
+*.ipynb
 .ruff_cache
+__pycache__
+\data
+main.py
