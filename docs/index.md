@@ -1,13 +1,34 @@
-<div align="center">
-    <picture>
-        <source media="(prefers-color-scheme: dark)" height="150px" srcset="docs\assets\README_logo.png">
-        <img alt="logo" height="150px" src="docs/logo.png">
-    </picture>
-    <br>
-    <h1>
-    </h1>
-</div>
 
+# Welcome to the MINDS Database Documentation
+
+<html>
+<head>
+    <style>
+        .container {
+            display: flex;
+            align-items: center; /* Aligns items vertically in the center */
+        }
+        .text {
+            margin-left: 20px; /* Adjusts spacing between the logo and the text */
+            font-size: 40px; /* Adjust the font size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p align="left">
+        <img src="assets\logo.png" alt="Logo" width="250"/>
+    </p>
+    <div class="text">
+        <span style="display:block;font-weight:bold;font-size:40px;"><u>M</u>ultimodal <u>I</u>ntegration of O<u>n</u>cology <u>D</u>ata <u>S</u>ystem</span>
+    </div>
+</div>
+</body>
+</html>
+
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
 
 ## Installation
@@ -29,7 +50,7 @@ pip install git+https://github.com/lab-rasool/MINDS.git
 After installing the package, please create a .env file in the root directory of the project with the following variables:
 
 ```bash
-HOST=127.0.0.1
+HOST=localhost
 PORT=3306
 DB_USER=root
 PASSWORD=my-secret-pw
@@ -87,25 +108,15 @@ cohort.download(threads=12, exclude=["Slide Image"])
 
 ## Please cite our work
 
+**Note**: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:
+
 ```bibtex
-@Article{s24051634,
-    AUTHOR = {Tripathi, Aakash and Waqas, Asim and Venkatesan, Kavya and Yilmaz, Yasin and Rasool, Ghulam},
-    TITLE = {Building Flexible, Scalable, and Machine Learning-Ready Multimodal Oncology Datasets},
-    JOURNAL = {Sensors},
-    VOLUME = {24},
-    YEAR = {2024},
-    NUMBER = {5},
-    ARTICLE-NUMBER = {1634},
-    URL = {https://www.mdpi.com/1424-8220/24/5/1634},
-    ISSN = {1424-8220},
-    DOI = {10.3390/s24051634}
+@misc{tripathi2023building,
+      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
+      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
+      year={2023},
+      eprint={2310.01438},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
 }
 ```
-
-## Contributing
-
-We welcome contributions from the community. If you would like to contribute to the MINDS project, please read our [contributing guidelines](CONTRIBUTING.md).
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
