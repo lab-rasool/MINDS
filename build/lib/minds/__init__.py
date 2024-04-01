@@ -75,7 +75,7 @@ class Cohort:
             )
 
         self._download_gdc_files(threads, include=include, exclude=exclude)
-        self._download_tcia_files(threads)
+        self._download_tcia_files(threads, include=include, exclude=exclude)
 
     def include(self, modalities):
         print(f"Only including {modalities} modalities in download")

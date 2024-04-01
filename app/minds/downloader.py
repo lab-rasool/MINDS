@@ -164,8 +164,6 @@ class GDCFileDownloader:
                     ): patient_data
                     for patient_data in self.manifest
                 }
-                # for patient_data in self.manifest:
-                #     executor.submit(self.download_files_for_patient, patient_data)
                 for future in as_completed(futures):
                     progress.update(task, advance=1)
 
@@ -212,38 +210,33 @@ class TCIAFileDownloader:
         self.exclude = kwargs.get("exclude", [])
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
-    def downloadSeries(
-        self,
-        series_data,
-        number=0,
-        path="",
-    ):
-        seriesUID = ""
-        success = 0
+    def downloadSeries(self, series_data, number=0, path=""):
         base_url = "https://services.cancerimagingarchive.net/nbia-api/services/v1/"
         downloadOptions = "getImage?NewFileNames=Yes&SeriesInstanceUID="
 
         with Progress() as progress:
-            try:
-                task = progress.add_task(
-                    "Downloading series from TCIA", total=len(series_data)
-                )
-                for x in series_data:
-                    seriesUID = x
-                    pathTmp = path + "/" + seriesUID
-                    data_url = base_url + downloadOptions + seriesUID
-                    if not os.path.isdir(pathTmp):
+            task = progress.add_task(
+                "Downloading series from TCIA", total=len(series_data)
+            )
+            for seriesUID, modality in series_data:
+                if (self.include and modality not in self.include) or (
+                    self.exclude and modality in self.exclude
+                ):
+                    continue  # Skip the download if the modality is not in the include list or is in the exclude list
+
+                pathTmp = os.path.join(path, seriesUID)
+                data_url = base_url + downloadOptions + seriesUID
+                if not os.path.isdir(pathTmp):
+                    try:
                         data = requests.get(data_url)
                         if data.status_code == 200:
-                            file = zipfile.ZipFile(io.BytesIO(data.content))
-                            file.extractall(path=pathTmp)
-                            success += 1
-                            if number > 0:
-                                if success == number:
+                            with zipfile.ZipFile(io.BytesIO(data.content)) as file:
+                                file.extractall(path=pathTmp)
+                                progress.update(task, advance=1)
+                                if number > 0 and progress.completed >= number:
                                     break
-                    progress.update(task, advance=1)
-            except Exception as e:
-                logging.error(f"Failed to download series {seriesUID}: {e}")
+                    except Exception as e:
+                        logging.error(f"Failed to download series {seriesUID}: {e}")
 
     # Function to recursively search for keys in nested dictionaries and lists
     def find_values(self, key, dictionary):
@@ -296,12 +289,16 @@ class TCIAFileDownloader:
             for modality in modalities:
                 if modality in entry:
                     # Process each series under the modality
-                    for series in entry[modality]:
-                        series_instance_uid = series.get("SeriesInstanceUID")
-                        if series_instance_uid:
-                            self.move_series_folder(
-                                series_instance_uid, patient_id, modality
-                            )
+                    if modality not in ["PatientID", "StudyInstanceUID"] and (
+                        (self.include and modality in self.include)
+                        or (self.exclude and modality not in self.exclude)
+                    ):
+                        for series in entry[modality]:
+                            series_instance_uid = series.get("SeriesInstanceUID")
+                            if series_instance_uid:
+                                self.move_series_folder(
+                                    series_instance_uid, patient_id, modality
+                                )
 
     def move_series_folder(self, series_instance_uid, patient_id, modality):
         source_path = os.path.join(self.output_dir, series_instance_uid)
@@ -323,7 +320,18 @@ class TCIAFileDownloader:
     def process_cases(self):
         with open(self.MANIFEST_FILE, "r") as f:
             manifest = json.load(f)
-        series_instance_uids = self.find_values("SeriesInstanceUID", manifest)
+        # series_instance_uids = self.find_values("SeriesInstanceUID", manifest)
+        series_instance_uids = [
+            (self.find_values("SeriesInstanceUID", entry), entry.get("Modality"))
+            for entry in manifest
+            if (
+                "Modality" in entry
+                and (
+                    (self.include and entry["Modality"] in self.include)
+                    or (self.exclude and entry["Modality"] not in self.exclude)
+                )
+            )
+        ]
         self.downloadSeries(series_instance_uids, path=self.output_dir)
         self.find_and_process_series()
 

@@ -7,6 +7,7 @@ Author: Aakash Tripathi
 Author-email: aakash.tripathi@moffitt.org
 License: MIT
 Description-Content-Type: text/markdown
+License-File: LICENSE
 
 <div align="center">
     <picture>
@@ -78,7 +79,7 @@ query = "SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
 df = minds.query(query)
 ```
 
-### Downloading data from MINDS
+### Building the cohort and downloading the data
 
 ```python
 # Generate a cohort to download from query
@@ -87,9 +88,12 @@ query_cohort = minds.build_cohort(query=query, output_dir="./data")
 # or you can now directly supply a cohort from GDC
 gdc_cohort = minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
 
-# To download the data from the a cohort, simply call the download method for the cohort 
-# for example, downloading the gdc_cohort
-gdc_cohort.download()
+# to get the cohort details
+cohort.stats()
+
+# to download the data from the cohort to the output directory specified
+# you can also specify the number of threads to use and the modalities to exclude or include
+cohort.download(threads=12, exclude=["Slide Image"])
 ```
 
 ## Please cite our work

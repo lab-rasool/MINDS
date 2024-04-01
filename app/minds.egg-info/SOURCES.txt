@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 app/minds/__init__.py
