@@ -41,6 +41,32 @@ class GDCFileDownloader:
             self.manifest = json.load(f)
         self.include = kwargs.get("include", [])
         self.exclude = kwargs.get("exclude", [])
+        self.modalities = [
+            "Aggregated Somatic Mutation",
+            "Aligned Reads",
+            "Allele-specific Copy Number Segment",
+            "Annotated Somatic Mutation",
+            "Biospecimen Supplement",
+            "Clinical Supplement",
+            "Copy Number Segment",
+            "Gene Expression Quantification",
+            "Gene Level Copy Number",
+            "Isoform Expression Quantification",
+            "Masked Copy Number Segment",
+            "Masked Intensities",
+            "Masked Somatic Mutation",
+            "Methylation Beta Value",
+            "miRNA Expression Quantification",
+            "Pathology Report",
+            "Protein Expression Quantification",
+            "Raw Intensities",
+            "Raw Simple Somatic Mutation",
+            "Simple Germline Variation",
+            "Slide Image",
+            "Splice Junction Quantification",
+            "Structural Rearrangement",
+            "Transcript Fusion",
+        ]
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def download_files(self, file_uuids, case_id):
@@ -79,6 +105,9 @@ class GDCFileDownloader:
                 continue
 
             if self.exclude and data_type in self.exclude:
+                continue
+
+            if data_type not in self.modalities:
                 continue
 
             file_uuids = [file["id"] for file in files if "id" in file]
@@ -208,6 +237,30 @@ class TCIAFileDownloader:
         self.MANIFEST_FILE = os.path.join(output_dir, "manifest.json")
         self.include = kwargs.get("include", [])
         self.exclude = kwargs.get("exclude", [])
+        self.modalities = [
+            "MG",
+            "MR",
+            "CT",
+            "SEG",
+            "RTSTRUCT",
+            "CR",
+            "SR",
+            "US",
+            "PT",
+            "DX",
+            "RTDOSE",
+            "RTPLAN",
+            "PR",
+            "REG",
+            "RWV",
+            "NM",
+            "KO",
+            "FUSION",
+            "OT",
+            "XA",
+            "SC",
+            "RF",
+        ]
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def downloadSeries(self, series_data, number=0, path=""):
@@ -259,34 +312,9 @@ class TCIAFileDownloader:
         with open(self.MANIFEST_FILE, "r") as file:
             manifest = json.load(file)
 
-        modalities = [
-            "MG",
-            "MR",
-            "CT",
-            "SEG",
-            "RTSTRUCT",
-            "CR",
-            "SR",
-            "US",
-            "PT",
-            "DX",
-            "RTDOSE",
-            "RTPLAN",
-            "PR",
-            "REG",
-            "RWV",
-            "NM",
-            "KO",
-            "FUSION",
-            "OT",
-            "XA",
-            "SC",
-            "RF",
-        ]
-
         for entry in manifest:
             patient_id = entry.get("PatientID")
-            for modality in modalities:
+            for modality in self.modalities:
                 if modality in entry:
                     # Process each series under the modality
                     if modality not in ["PatientID", "StudyInstanceUID"] and (
@@ -311,27 +339,33 @@ class TCIAFileDownloader:
             return
 
         os.makedirs(dest_path, exist_ok=True)
-        # Ensure the destination directory does not already contain a directory with the same name
         if os.path.exists(os.path.join(dest_path, series_instance_uid)):
-            logging.warning(f"Series already exists: {series_instance_uid}")
+            logging.warning(f"Overwriting existing series: {series_instance_uid}")
+            shutil.rmtree(dest_path)
+            shutil.move(source_path, dest_path)
         else:
             shutil.move(source_path, dest_path)
 
     def process_cases(self):
         with open(self.MANIFEST_FILE, "r") as f:
             manifest = json.load(f)
-        # series_instance_uids = self.find_values("SeriesInstanceUID", manifest)
-        series_instance_uids = [
-            (self.find_values("SeriesInstanceUID", entry), entry.get("Modality"))
-            for entry in manifest
-            if (
-                "Modality" in entry
-                and (
-                    (self.include and entry["Modality"] in self.include)
-                    or (self.exclude and entry["Modality"] not in self.exclude)
-                )
-            )
-        ]
+
+        series_instance_uids = []
+        for entry in manifest:
+            for modality in self.modalities:
+                if modality in entry:
+                    # Process each series under the modality
+                    if modality not in ["PatientID", "StudyInstanceUID"] and (
+                        (self.include and modality in self.include)
+                        or (self.exclude and modality not in self.exclude)
+                    ):
+                        series_instance_uids.extend(
+                            [
+                                (series.get("SeriesInstanceUID"), modality)
+                                for series in entry[modality]
+                            ]
+                        )
+
         self.downloadSeries(series_instance_uids, path=self.output_dir)
         self.find_and_process_series()
 
