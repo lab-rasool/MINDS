@@ -21,7 +21,7 @@ def numpy_to_python(data):
 
 
 class Aggregator:
-    def __init__(self, cohort, output_dir, max_workers=6):
+    def __init__(self, cohort, output_dir, max_workers=8):
         self.cohort = cohort
         self.case_ids = self.cohort.index.to_list()
         self.case_submitter_ids = self.cohort.values.tolist()
