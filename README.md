@@ -64,7 +64,7 @@ tables = minds.get_tables()
 columns = minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
+query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
 df = minds.query(query)
 ```
 
@@ -78,11 +78,11 @@ query_cohort = minds.build_cohort(query=query, output_dir="./data")
 gdc_cohort = minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
 
 # to get the cohort details
-cohort.stats()
+gdc_cohort.stats()
 
 # to download the data from the cohort to the output directory specified
 # you can also specify the number of threads to use and the modalities to exclude or include
-cohort.download(threads=12, exclude=["Slide Image"])
+gdc_cohort.download(threads=12, exclude=["Slide Image"])
 ```
 
 ## Please cite our work
