@@ -8,7 +8,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="minds",
-    version="0.0.4",
+    version="0.0.5",
     description="A package for downloading and processing data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
