@@ -2,12 +2,12 @@ LICENSE
 README.md
 pyproject.toml
 setup.py
+app/med_minds/__init__.py
+app/med_minds/aggregator.py
+app/med_minds/database.py
+app/med_minds/downloader.py
+app/med_minds/update.py
 app/med_minds.egg-info/PKG-INFO
 app/med_minds.egg-info/SOURCES.txt
 app/med_minds.egg-info/dependency_links.txt
 app/med_minds.egg-info/top_level.txt
-app/minds/__init__.py
-app/minds/aggregator.py
-app/minds/database.py
-app/minds/downloader.py
-app/minds/update.py

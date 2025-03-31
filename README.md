@@ -222,7 +222,7 @@ docker run -d --name minds -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_DB=mind
 Finally, to install the MINDS python package use the following pip command:
 
 ```bash
-pip install med-minds  # Updated package name
+pip install med-minds
 ```
 
 After installing the package, please create a .env file in the root directory of the project with the following variables:

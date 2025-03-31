@@ -50,7 +50,7 @@ requirements = [
 
 setup(
     name="med-minds",  # Changed from minds to med-minds
-    version="0.0.6",  # PostgreSQL migration version
+    version="0.0.7",  # PostgreSQL migration version
     description="A package for downloading and processing multimodal oncology data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
@@ -70,6 +70,8 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     python_requires=">=3.7",
 )
