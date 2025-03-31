@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: med-minds
-Version: 0.0.6
+Version: 0.0.7
 Summary: A package for downloading and processing multimodal oncology data from the MINDS database
 Home-page: https://github.com/lab-rasool/MINDS
 Author: Aakash Tripathi
@@ -14,6 +14,14 @@ Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Scientific/Engineering :: Visualization
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
