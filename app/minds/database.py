@@ -5,9 +5,8 @@ import shutil
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.exc import PendingRollbackError, SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
+import psycopg2
+import psycopg2.extras
 
 
 class DatabaseManager:
@@ -18,60 +17,87 @@ class DatabaseManager:
         os.environ.pop("PASSWORD", None)
         os.environ.pop("DATABASE", None)
         load_dotenv(dotenv_path=dotenv_path)
-        host = os.getenv("HOST")
-        port = os.getenv("PORT")
-        user = os.getenv("DB_USER")
-        password = os.getenv("PASSWORD")
-        self.database = os.getenv("DATABASE")
-        database_url = (
-            f"mysql+pymysql://{user}:{password}@{host}:{port}/{self.database}"
-        )
-        self.engine = create_engine(database_url)
-        self.Session = sessionmaker(bind=self.engine)
+        self.config = {
+            "host": os.getenv("HOST"),
+            "port": os.getenv("PORT"),
+            "user": os.getenv("DB_USER"),
+            "password": os.getenv("PASSWORD"),
+            "database": os.getenv("DATABASE"),
+        }
+        self.connection = self.connect_to_db(self.config)
+
+    def connect_to_db(self, config):
+        """Connect to PostgreSQL database."""
+        try:
+            connection = psycopg2.connect(
+                host=config["host"],
+                database=config["database"],
+                user=config["user"],
+                password=config["password"],
+                port=config.get("port", 5432),  # PostgreSQL default port
+            )
+            return connection
+        except psycopg2.Error as e:
+            logging.error(f"Error connecting to PostgreSQL database: {e}")
+            return None
 
     def execute(self, query):
         try:
-            with self.engine.connect() as connection:
-                return pd.read_sql(query, connection)
-        except SQLAlchemyError as e:
+            cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            cursor.execute(query)
+            return pd.DataFrame(
+                cursor.fetchall(), columns=[desc[0] for desc in cursor.description]
+            )
+        except psycopg2.Error as e:
             logging.error(f"Error executing query: {e}")
             raise
 
     def get_minds_cohort(self, query):
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
         df = self.execute(query)
         cohort = df.groupby("case_id")["case_submitter_id"].unique()
         return cohort
 
     def get_gdc_cohort(self, gdc_cohort):
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cohort = pd.read_csv(gdc_cohort, sep="\t", dtype=str)
         query = f"""
             SELECT case_id, case_submitter_id 
-            FROM {self.database}.clinical 
-            WHERE case_id IN ({','.join([f"'{i}'" for i in cohort['id']])})
+            FROM clinical 
+            WHERE case_id IN ({",".join([f"'{i}'" for i in cohort["id"]])})
         """
         df = self.execute(query)
         cohort = df.groupby("case_id")["case_submitter_id"].unique()
         return cohort
 
     def get_tables(self):
-        query = "SHOW TABLES"
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = """
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public'
+        """
         tables_in_db = self.execute(query)
-        name_of_table = tables_in_db.columns[0]
-        tables = tables_in_db[name_of_table]
+        tables = tables_in_db["table_name"]
         return tables
 
     def get_columns(self, table):
-        query = f"SHOW COLUMNS FROM {table}"
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = f"""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = '{table}'
+        """
         columns = self.execute(query)
-        return columns["Field"]
+        return columns["column_name"]
 
     def update(self, temp_folder):
+        cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
         if not os.path.exists(temp_folder):
             os.makedirs(temp_folder)
 
         logging.info("Uploading new data to the database")
 
-        session = self.Session()
         try:
             for file in os.listdir(temp_folder):
                 table_name = file.split(".")[0]
@@ -80,27 +106,48 @@ class DatabaseManager:
 
                 if table_name in self.get_tables().tolist():
                     logging.info(f"Updating {table_name}")
-                    df.to_sql(
-                        name=table_name,
-                        con=self.engine,
-                        if_exists="append",
-                        index=False,
-                        chunksize=1000,
-                    )
+                    with self.connection.cursor() as cursor:
+                        for index, row in df.iterrows():
+                            columns = ", ".join(row.index)
+                            values = ", ".join(
+                                [
+                                    f"'{value}'" if pd.notna(value) else "NULL"
+                                    for value in row
+                                ]
+                            )
+                            query = f"""
+                                INSERT INTO {table_name} ({columns}) 
+                                VALUES ({values}) 
+                                ON CONFLICT DO NOTHING
+                            """
+                            cursor.execute(query)
                 else:
                     logging.info(f"Creating {table_name}")
-                    df.to_sql(
-                        name=table_name,
-                        con=self.engine,
-                        if_exists="replace",
-                        index=False,
-                    )
-            session.commit()
+                    with self.connection.cursor() as cursor:
+                        columns = ", ".join(df.columns)
+                        create_table_query = f"""
+                            CREATE TABLE {table_name} ({", ".join([f"{col} TEXT" for col in df.columns])})
+                        """
+                        cursor.execute(create_table_query)
+                        for index, row in df.iterrows():
+                            values = ", ".join(
+                                [
+                                    f"'{value}'" if pd.notna(value) else "NULL"
+                                    for value in row
+                                ]
+                            )
+                            insert_query = f"""
+                                INSERT INTO {table_name} ({columns}) 
+                                VALUES ({values}) 
+                                ON CONFLICT DO NOTHING
+                            """
+                            cursor.execute(insert_query)
+            self.connection.commit()
             logging.info("Finished uploading to the database")
-        except (SQLAlchemyError, PendingRollbackError) as e:
-            session.rollback()
+        except psycopg2.Error as e:
+            self.connection.rollback()
             logging.error(f"Error during update: {e}")
             raise
         finally:
-            session.close()
+            self.connection.close()
             shutil.rmtree(temp_folder)

@@ -1,6 +1,30 @@
+Metadata-Version: 2.4
+Name: med-minds
+Version: 0.0.6
+Summary: A package for downloading and processing multimodal oncology data from the MINDS database
+Home-page: https://github.com/lab-rasool/MINDS
+Author: Aakash Tripathi
+Author-email: Aakash Tripathi <aakash.tripathi@moffitt.org>
+License-Expression: MIT
+Project-URL: Repository, https://github.com/lab-rasool/MINDS
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
 <div align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" height="150px" srcset="https://raw.githubusercontent.com/lab-rasool/MINDS/main/docs/assets/README_logo.png">
+        <source media="(prefers-color-scheme: dark)" height="150px" srcset="docs\assets\README_logo.png">
         <img alt="logo" height="150px" src="docs/logo.png">
     </picture>
     <br>

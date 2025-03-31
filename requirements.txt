@@ -35,3 +35,4 @@ sqlalchemy
 pymysql
 cryptography
 rich
+psycopg2-binary
