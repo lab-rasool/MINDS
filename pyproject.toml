@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "med-minds"
-version = "0.0.7"
+version = "0.0.8"
 description = "A package for downloading and processing multimodal oncology data from the MINDS database"
 readme = "README.md"
 authors = [

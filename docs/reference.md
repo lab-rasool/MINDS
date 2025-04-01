@@ -1,3 +1,3 @@
 # Reference
 
-::: app.minds
+::: app.med_minds

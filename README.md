@@ -7,7 +7,23 @@
     <h1>
     </h1>
 </div>
-  <!-- 115,974  -->
+
+<p align="center">
+    <a href="https://pypi.org/project/med-minds/">
+        <img src="https://img.shields.io/pypi/v/med-minds.svg" alt="PyPI Version">
+    </a>
+    <a href="https://pypi.org/project/med-minds/">
+        <img src="https://img.shields.io/pypi/pyversions/med-minds.svg" alt="Python Versions">
+    </a>
+    <a href="https://github.com/lab-rasool/MINDS/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/lab-rasool/MINDS.svg" alt="License">
+    </a>
+    <a href="https://doi.org/10.3390/s24051634">
+        <img src="https://img.shields.io/badge/DOI-10.3390%2Fs24051634-blue" alt="DOI">
+    </a>
+</p>
+
+<!-- 115,974  -->
 
 <!-- Make a dropdown tab -->
 
@@ -253,11 +269,11 @@ If you're upgrading from a previous version that used MySQL, please ensure your 
 If you have locally setup the MINDS database, then you will need to populate it with data. To do this, or to update the database with the latest data, you can use the following command:
 
 ```python
-# Import the minds package
-import minds
+# Import the med_minds package
+import med_minds
 
 # Update the database with the latest data
-minds.update()
+med_minds.update()
 ```
 
 ### Querying the MINDS database
@@ -265,27 +281,27 @@ minds.update()
 The MINDS python package provides a python interface to the MINDS database. You can use this interface to query the database and return the results as a pandas dataframe.
 
 ```python
-import minds
+import med_minds
 
 # get a list of all the tables in the database
-tables = minds.get_tables()
+tables = med_minds.get_tables()
 
 # get a list of all the columns in a table
-columns = minds.get_columns("clinical")
+columns = med_minds.get_columns("clinical")
 
 # Query the database directly
 query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
-df = minds.query(query)
+df = med_minds.query(query)
 ```
 
 ### Building the cohort and downloading the data
 
 ```python
 # Generate a cohort to download from query
-query_cohort = minds.build_cohort(query=query, output_dir="./data")
+query_cohort = med_minds.build_cohort(query=query, output_dir="./data")
 
 # or you can now directly supply a cohort from GDC
-gdc_cohort = minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
+gdc_cohort = med_minds.build_cohort(gdc_cohort="cohort_Unsaved_Cohort.2024-02-12.tsv", output_dir="./data")
 
 # to get the cohort details
 gdc_cohort.stats()

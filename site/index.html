@@ -41,9 +41,11 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#postgresql-migration-v006">PostgreSQL Migration (v0.0.6)</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
         <ul>
@@ -56,6 +58,10 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#please-cite-our-work">Please cite our work</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
     </li>
     </ul>
                 </li>
@@ -88,50 +94,1562 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="welcome-to-the-minds-database-documentation">Welcome to the MINDS Database Documentation</h1>
-<html>
-<head>
-    <style>
-        .container {
-            display: flex;
-            align-items: center; /* Aligns items vertically in the center */
-        }
-        .text {
-            margin-left: 20px; /* Adjusts spacing between the logo and the text */
-            font-size: 40px; /* Adjust the font size as needed */
-            font-weight: bold; /* Makes the text bold */
-            /* Add more styling as needed */
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <p align="left">
-        <img src="assets\logo.png" alt="Logo" width="250"/>
-    </p>
-    <div class="text">
-        <span style="display:block;font-weight:bold;font-size:40px;"><u>M</u>ultimodal <u>I</u>ntegration of O<u>n</u>cology <u>D</u>ata <u>S</u>ystem</span>
-    </div>
+<div align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" height="150px" srcset="https://raw.githubusercontent.com/lab-rasool/MINDS/main/docs/assets/README_logo.png">
+        <img alt="logo" height="150px" src="docs/logo.png">
+    </picture>
+    <br>
+    <h1>
+    </h1>
 </div>
-</body>
-</html>
 
-<p>MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
-MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.</p>
+<!-- Make a dropdown tab -->
+
+<p>MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.</p>
+<blockquote>
+<p>[!NOTE]
+We are currently updating MINDS to include more data sources and improve the user experience. If you have any suggestions or would like to contribute, please feel free to reach out to us. Here is a list of the projects to be included in MINDS (115,974 total patients).
+<details>
+<summary>Projects in MINDS</summary></p>
+<table>
+<thead>
+<tr>
+<th>Project Name</th>
+<th>Cases</th>
+<th>Clinical</th>
+<th>Radiology</th>
+<th>Histopathology</th>
+<th>Molecular</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundation Medicine (FM)</td>
+<td>18,004</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>The Cancer Genome Atlas (TCGA)</td>
+<td>11,428</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Therapeutically Applicable Research to Generate Effective Treatments (TARGET)</td>
+<td>6,543</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Clinical Proteomic Tumor Analysis Consortium (CPTAC)</td>
+<td>1,656</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>The Molecular Profiling to Predict Response to Treatment (MP2PRT)</td>
+<td>1,562</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Multiple Myeloma Research Foundation (MMRF)</td>
+<td>995</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>BEATAML1.0</td>
+<td>882</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Cancer Genome Characterization Initiatives (CGCI)</td>
+<td>645</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>NCI Center for Cancer Research (NCICCR)</td>
+<td>489</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>REBC</td>
+<td>449</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>MATCH</td>
+<td>448</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Ukrainian National Research Center for Radiation Medicine Trio Study (TRIO)</td>
+<td>339</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Count Me In (CMI)</td>
+<td>299</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Human Cancer Model Initiative (HCMI)</td>
+<td>278</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>West Coast Prostrate Cancer Dream Team (WCDT)</td>
+<td>101</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Oregon Health and Science University (OHSU)</td>
+<td>176</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Applied Proteogenomics OrganizationaL Learning and Outcomes (APOLLO)</td>
+<td>87</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>EXCEPTIONAL RESPONDERS</td>
+<td>84</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Environment And Genetics in Lung Cancer Etiology (EAGLE)</td>
+<td>50</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>ORGANOID</td>
+<td>70</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Clinical Trials Sequencing Project (CTSP)</td>
+<td>45</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>VA Research Precision Oncology Program (VAREPOP)</td>
+<td>7</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>4D-Lung</td>
+<td>20</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>A091105</td>
+<td>83</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AAPM-RT-MAC</td>
+<td>55</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACNS0332</td>
+<td>85</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-6698</td>
+<td>385</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-Contralateral-Breast-MR</td>
+<td>984</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-DSC-MR-Brain</td>
+<td>123</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-FLT-Breast</td>
+<td>83</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-FMISO-Brain</td>
+<td>45</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-HNSCC-FDG-PET-CT</td>
+<td>260</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ACRIN-NSCLC-FDG-PET</td>
+<td>242</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Adrenal-ACC-Ki67-Seg</td>
+<td>53</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Advanced-MRI-Breast-Lesions</td>
+<td>632</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>AHEP0731</td>
+<td>80</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AHOD0831</td>
+<td>165</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AML-Cytomorphology_LMU</td>
+<td>200</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>AML-Cytomorphology_MLL_Helmholtz</td>
+<td>189</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Anti-PD-1_Lung</td>
+<td>46</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Anti-PD-1_MELANOMA</td>
+<td>47</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>APOLLO-5</td>
+<td>414</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ARAR0331</td>
+<td>108</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AREN0532</td>
+<td>544</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AREN0533</td>
+<td>294</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AREN0534</td>
+<td>239</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>B-mode-and-CEUS-Liver</td>
+<td>120</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Bone-Marrow-Cytomorphology_MLL_Helmholtz_Fraunhofer</td>
+<td>945</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Brain-TR-GammaKnife</td>
+<td>47</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Brain-Tumor-Progression</td>
+<td>20</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Breast-Cancer-Screening-DBT</td>
+<td>5,060</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>BREAST-DIAGNOSIS</td>
+<td>88</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Breast-Lesions-USG</td>
+<td>256</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Breast-MRI-NACT-Pilot</td>
+<td>64</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Burdenko-GBM-Progression</td>
+<td>180</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>C-NMC 2019</td>
+<td>118</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>C4KC-KiTS</td>
+<td>210</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CALGB50303</td>
+<td>155</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CBIS-DDSM</td>
+<td>1,566</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CC-Radiomics-Phantom</td>
+<td>17</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CC-Radiomics-Phantom-2</td>
+<td>251</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CC-Tumor-Heterogeneity</td>
+<td>23</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CDD-CESM</td>
+<td>326</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-AML</td>
+<td>8</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-CRC</td>
+<td>49</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-GEC</td>
+<td>7</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-LCA</td>
+<td>61</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-MEL</td>
+<td>44</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-MML</td>
+<td>64</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMB-PCA</td>
+<td>12</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CMMD</td>
+<td>1,775</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>CODEX imaging of HCC</td>
+<td>15</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Colorectal-Liver-Metastases</td>
+<td>197</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>COVID-19-AR</td>
+<td>105</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>COVID-19-NY-SBU</td>
+<td>1,384</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CRC_FFPE-CODEX_CellNeighs</td>
+<td>35</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CT COLONOGRAPHY</td>
+<td>825</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CT Images in COVID-19</td>
+<td>661</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CT Lymph Nodes</td>
+<td>176</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CT-ORG</td>
+<td>140</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CT-Phantom4Radiomics</td>
+<td>1</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CT-vs-PET-Ventilation-Imaging</td>
+<td>20</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTpred-Sunitinib-panNET</td>
+<td>38</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DFCI-BCH-BWH-PEDs-HGG</td>
+<td>61</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DLBCL-Morphology</td>
+<td>209</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>DRO-Toolkit</td>
+<td>32</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Duke-Breast-Cancer-MRI</td>
+<td>922</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>EA1141</td>
+<td>500</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ExACT</td>
+<td>30</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>FDG-PET-CT-Lesions</td>
+<td>900</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GammaKnife-Hippocampal</td>
+<td>390</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GBM-DSC-MRI-DRO</td>
+<td>3</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GLIS-RT</td>
+<td>230</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HCC-TACE-Seg</td>
+<td>105</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HE-vs-MPM</td>
+<td>12</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Head-Neck Cetuximab</td>
+<td>111</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Head-Neck-PET-CT</td>
+<td>298</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HEAD-NECK-RADIOMICS-HN1</td>
+<td>137</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Healthy-Total-Body-CTs</td>
+<td>30</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HER2 tumor ROIs</td>
+<td>273</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>HistologyHSI-GB</td>
+<td>13</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>HNC-IMRT-70-33</td>
+<td>211</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HNSCC</td>
+<td>627</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HNSCC-3DCT-RT</td>
+<td>31</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HNSCC-mIF-mIHC-comparison</td>
+<td>8</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Hungarian-Colorectal-Screening</td>
+<td>200</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>ISPY1</td>
+<td>222</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ISPY2</td>
+<td>719</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IvyGAP</td>
+<td>39</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LCTSC</td>
+<td>60</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LDCT-and-Projection-data</td>
+<td>299</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LGG-1p19qDeletion</td>
+<td>159</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LIDC-IDRI</td>
+<td>1,010</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Lung Phantom</td>
+<td>1</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Lung-Fused-CT-Pathology</td>
+<td>6</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Lung-PET-CT-Dx</td>
+<td>355</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LungCT-Diagnosis</td>
+<td>61</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Meningioma-SEG-CLASS</td>
+<td>96</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MIDRC-RICORD-1A</td>
+<td>110</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MIDRC-RICORD-1B</td>
+<td>117</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MIDRC-RICORD-1C</td>
+<td>361</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MiMM_SBILab</td>
+<td>5</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>NADT-Prostate</td>
+<td>37</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>NaF PROSTATE</td>
+<td>9</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NLST</td>
+<td>26,254</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>NRG-1308</td>
+<td>12</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NSCLC Radiogenomics</td>
+<td>211</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NSCLC-Cetuximab</td>
+<td>490</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NSCLC-Radiomics</td>
+<td>422</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NSCLC-Radiomics-Genomics</td>
+<td>89</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NSCLC-Radiomics-Interobserver1</td>
+<td>22</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>OPC-Radiomics</td>
+<td>606</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Osteosarcoma-Tumor-Assessment</td>
+<td>4</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Ovarian Bevacizumab Response</td>
+<td>78</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Pancreas-CT</td>
+<td>82</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Pancreatic-CT-CBCT-SEG</td>
+<td>40</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PCa_Bx_3Dpathology</td>
+<td>50</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Pediatric-CT-SEG</td>
+<td>359</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Pelvic-Reference-Data</td>
+<td>58</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Phantom FDA</td>
+<td>7</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Post-NAT-BRCA</td>
+<td>64</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Pretreat-MetsToBrain-Masks</td>
+<td>200</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Prostate Fused-MRI-Pathology</td>
+<td>28</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Prostate-3T</td>
+<td>64</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Prostate-Anatomical-Edge-Cases</td>
+<td>131</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PROSTATE-DIAGNOSIS</td>
+<td>92</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PROSTATE-MRI</td>
+<td>26</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Prostate-MRI-US-Biopsy</td>
+<td>1,151</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PROSTATEx</td>
+<td>346</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Pseudo-PHI-DICOM-Data</td>
+<td>21</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PTRC-HGSOC</td>
+<td>174</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>QIBA CT-1C</td>
+<td>1</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIBA-CT-Liver-Phantom</td>
+<td>3</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN Breast DCE-MRI</td>
+<td>10</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN GBM Treatment Response</td>
+<td>54</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN LUNG CT</td>
+<td>47</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN PET Phantom</td>
+<td>2</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN PROSTATE</td>
+<td>22</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-BRAIN-DSC-MRI</td>
+<td>49</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-BREAST</td>
+<td>67</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-BREAST-02</td>
+<td>13</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-HEADNECK</td>
+<td>279</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-PROSTATE-Repeatability</td>
+<td>15</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>QIN-SARCOMA</td>
+<td>15</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RADCURE</td>
+<td>3,346</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>REMBRANDT</td>
+<td>130</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ReMIND</td>
+<td>114</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RHUH-GBM</td>
+<td>40</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER Breast MRI</td>
+<td>5</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER Lung CT</td>
+<td>32</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER Lung PET-CT</td>
+<td>244</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER NEURO MRI</td>
+<td>19</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER PHANTOM MRI</td>
+<td>10</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER PHANTOM PET-CT</td>
+<td>20</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RIDER Pilot</td>
+<td>8</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>S0819</td>
+<td>1,299</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SLN-Breast</td>
+<td>78</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>SN-AM</td>
+<td>60</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Soft-tissue-Sarcoma</td>
+<td>51</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SPIE-AAPM Lung CT Challenge</td>
+<td>70</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>StageII-Colorectal-CT</td>
+<td>230</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>UCSF-PDGM</td>
+<td>495</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>UPENN-GBM</td>
+<td>630</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Vestibular-Schwannoma-MC-RC</td>
+<td>124</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Vestibular-Schwannoma-SEG</td>
+<td>242</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>VICTRE</td>
+<td>2,994</td>
+<td></td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></details></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <h2 id="installation">Installation</h2>
-<p>Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a MySQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system <a href="https://docs.docker.com/get-docker/">here</a>. Next, you will need to pull the MySQL docker image and run a container with the following command.</p>
-<p><strong>NOTE:</strong> Please replace <code>my-secret-pw</code> with your desired password and <code>port</code> with the port you want to use to access the database. The default port for MySQL is 3306. The following command will not work until you replace <code>port</code> with a valid port number.</p>
-<pre><code class="language-bash">docker run -d --name minds -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=minds -p port:3306 mysql
+<p>Currently the cloud version of MINDS is in closed beta, but, you can still recreate the MINDS database locally. To get the local version of the MINDS database running, you will need to setup a PostgreSQL database and populate it with the MINDS schema. This can be easily done using a docker container. First, you will need to install docker. You can find the installation instructions for your operating system <a href="https://docs.docker.com/get-docker/">here</a>. Next, you will need to pull the PostgreSQL docker image and run a container with the following command.</p>
+<blockquote>
+<p>[!NOTE]
+Please replace <code>my-secret-pw</code> with your desired password and <code>port</code> with the port you want to use to access the database. The default port for PostgreSQL is 5432. The following command will not work until you replace <code>port</code> with a valid port number.</p>
+</blockquote>
+<pre><code class="language-bash">docker run -d --name minds -e POSTGRES_PASSWORD=my-secret-pw -e POSTGRES_DB=minds -p port:5432 postgres
 </code></pre>
 <p>Finally, to install the MINDS python package use the following pip command:</p>
-<pre><code class="language-bash">pip install git+https://github.com/lab-rasool/MINDS.git
+<pre><code class="language-bash">pip install med-minds
 </code></pre>
 <p>After installing the package, please create a .env file in the root directory of the project with the following variables:</p>
-<pre><code class="language-bash">HOST=localhost
-PORT=3306
-DB_USER=root
+<pre><code class="language-bash">HOST=127.0.0.1
+PORT=5432
+DB_USER=postgres
 PASSWORD=my-secret-pw
 DATABASE=minds   
 </code></pre>
+<h2 id="postgresql-migration-v006">PostgreSQL Migration (v0.0.6)</h2>
+<p>Version 0.0.6 introduces a migration from MySQL to PostgreSQL as the database backend, offering:</p>
+<ul>
+<li>Better performance for complex queries</li>
+<li>Advanced data types and indexing options</li>
+<li>More robust transaction support</li>
+<li>Better standards compliance</li>
+</ul>
+<p>If you're upgrading from a previous version that used MySQL, please ensure your database environment is updated to use PostgreSQL 12 or later.</p>
 <h2 id="usage">Usage</h2>
 <h3 id="initial-setup-and-automated-updates">Initial setup and automated updates</h3>
 <p>If you have locally setup the MINDS database, then you will need to populate it with data. To do this, or to update the database with the latest data, you can use the following command:</p>
@@ -152,7 +1670,7 @@ tables = minds.get_tables()
 columns = minds.get_columns(&quot;clinical&quot;)
 
 # Query the database directly
-query = &quot;SELECT * FROM nihnci.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10&quot;
+query = &quot;SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10&quot;
 df = minds.query(query)
 </code></pre>
 <h3 id="building-the-cohort-and-downloading-the-data">Building the cohort and downloading the data</h3>
@@ -163,23 +1681,30 @@ query_cohort = minds.build_cohort(query=query, output_dir=&quot;./data&quot;)
 gdc_cohort = minds.build_cohort(gdc_cohort=&quot;cohort_Unsaved_Cohort.2024-02-12.tsv&quot;, output_dir=&quot;./data&quot;)
 
 # to get the cohort details
-cohort.stats()
+gdc_cohort.stats()
 
 # to download the data from the cohort to the output directory specified
 # you can also specify the number of threads to use and the modalities to exclude or include
-cohort.download(threads=12, exclude=[&quot;Slide Image&quot;])
+gdc_cohort.download(threads=12, exclude=[&quot;Slide Image&quot;])
 </code></pre>
 <h2 id="please-cite-our-work">Please cite our work</h2>
-<p><strong>Note</strong>: Currently under review at the Sensors journal special issue on "Multimodal Data Fusion Technologies and Applications in Intelligent System". Till then please cite our arXiv preprint:</p>
-<pre><code class="language-bibtex">@misc{tripathi2023building,
-      title={Building Flexible, Scalable, and Machine Learning-ready Multimodal Oncology Datasets}, 
-      author={Aakash Tripathi and Asim Waqas and Kavya Venkatesan and Yasin Yilmaz and Ghulam Rasool},
-      year={2023},
-      eprint={2310.01438},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+<pre><code class="language-bibtex">@Article{s24051634,
+    AUTHOR = {Tripathi, Aakash and Waqas, Asim and Venkatesan, Kavya and Yilmaz, Yasin and Rasool, Ghulam},
+    TITLE = {Building Flexible, Scalable, and Machine Learning-Ready Multimodal Oncology Datasets},
+    JOURNAL = {Sensors},
+    VOLUME = {24},
+    YEAR = {2024},
+    NUMBER = {5},
+    ARTICLE-NUMBER = {1634},
+    URL = {https://www.mdpi.com/1424-8220/24/5/1634},
+    ISSN = {1424-8220},
+    DOI = {10.3390/s24051634}
 }
 </code></pre>
+<h2 id="contributing">Contributing</h2>
+<p>We welcome contributions from the community. If you would like to contribute to the MINDS project, please read our <a href="CONTRIBUTING.md">contributing guidelines</a>.</p>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
               
             </div>
           </div><footer>
@@ -227,6 +1752,6 @@ cohort.download(threads=12, exclude=[&quot;Slide Image&quot;])
 </html>
 
 <!--
-MkDocs version : 1.5.3
-Build Date UTC : 2024-03-23 20:18:16.865946+00:00
+MkDocs version : 1.6.1
+Build Date UTC : 2025-04-01 15:58:32.842308+00:00
 -->

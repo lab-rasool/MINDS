@@ -13,6 +13,7 @@ from .downloader import (
 from .update import MINDSUpdater
 
 db = DatabaseManager()
+console = Console()
 
 
 def get_tables():
@@ -59,10 +60,37 @@ def query(query):
 
 
 class Cohort:
+    """
+    Cohort class for managing and processing medical data.
+
+    Attributes:
+        data (any): The input data for the cohort.
+        output_dir (str): The directory where output files will be stored.
+        manifest_file (str): The path to the manifest file in the output directory.
+    Methods:
+        __init__(data, output_dir):
+            Initializes the Cohort instance with data and output directory.
+        generate_manifest():
+            Generates a manifest file for the cohort using the Aggregator class.
+        download(threads=4, include=None, exclude=None):
+            Downloads files specified in the manifest. Raises FileNotFoundError if the manifest file is missing.
+        include(modalities):
+            Specifies the modalities to include in the download process.
+        stats():
+            Prints and returns statistics of the cohort, including file count and total size, grouped by modality.
+        _download_gdc_files(threads, include=None, exclude=None):
+            Downloads files from GDC using the GDCFileDownloader class.
+        _download_tcia_files(threads, include=None, exclude=None):
+            Downloads files from TCIA using the TCIAFileDownloader class.
+    """
+
     def __init__(self, data, output_dir):
         self.data = data
         self.output_dir = output_dir
         self.manifest_file = os.path.join(output_dir, "manifest.json")
+
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
 
     def generate_manifest(self):
         aggregator = Aggregator(self.data, self.output_dir)
@@ -98,6 +126,7 @@ class Cohort:
                         try:
                             patient_size += file["file_size"]
                         except Exception as e:
+                            console.print(f"Error calculating size for {file}: {e}")
                             pass
 
                     if key not in stats_dict:
@@ -114,7 +143,6 @@ class Cohort:
             stats_dict.items(), key=lambda x: x[1]["total_size"], reverse=True
         )
 
-        console = Console()
         table = Table(show_header=True, header_style="bold green")
         table.add_column("Modality")
         table.add_column("File Count")

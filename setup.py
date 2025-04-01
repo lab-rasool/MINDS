@@ -43,14 +43,14 @@ requirements = [
     "pandas",
     "python-dotenv",
     "sqlalchemy",
-    "psycopg2-binary",  # PostgreSQL driver instead of pymysql
+    "psycopg2-binary",
     "cryptography",
     "rich",
 ]
 
 setup(
     name="med-minds",  # Changed from minds to med-minds
-    version="0.0.7",  # PostgreSQL migration version
+    version="0.0.8",  # PostgreSQL migration version
     description="A package for downloading and processing multimodal oncology data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),

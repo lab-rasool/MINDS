@@ -358,6 +358,35 @@ class TCIAFileDownloader:
 
 
 class IDCFileDownloader:
+    """
+    IDCFileDownloader - A utility class for downloading DICOM files from the Imaging Data Commons (IDC).
+    This class handles the full process of querying the IDC API, retrieving file manifests,
+    and downloading medical imaging files in parallel. It also maintains a local manifest
+    of downloaded files organized by patient ID and modality.
+    Attributes:
+        idc_api_preamble (str): Base URL for the IDC API.
+        save_directory (str): Directory where downloaded files and manifest will be stored.
+        MAX_WORKERS (int): Maximum number of concurrent threads for parallel operations.
+    Methods:
+        make_api_call: Makes API calls to IDC with automatic retries.
+        get_manifest_preview: Gets file manifest data based on provided filters.
+        get_query_preview: Gets metadata for studies matching provided filters.
+        merge_data: Combines manifest and query data into a unified structure.
+        download_dicom_files: Downloads DICOM files from Google Cloud Storage in parallel.
+        update_manifest: Updates the local manifest JSON file with new downloads.
+        generate_merged_data_for_case: Creates merged data for a specific case.
+        process_cases: Processes multiple cases in parallel for downloading.
+    Dependencies:
+        - requests: For API communication
+        - google.cloud.storage: For downloading files from Google Cloud Storage
+        - concurrent.futures: For parallel processing
+        - urllib.parse: For URL parsing
+        - os: For file system operations
+        - json: For manifest handling
+        - retry: For implementing retry logic on API calls
+        - itertools.chain: For flattening nested lists
+    """
+
     def __init__(self, save_directory):
         self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v1"
         self.save_directory = save_directory

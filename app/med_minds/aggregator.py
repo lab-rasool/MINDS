@@ -21,6 +21,31 @@ def numpy_to_python(data):
 
 
 class Aggregator:
+    """
+    Aggregator class for managing and processing cohort data from GDC and TCIA sources.
+    Attributes:
+        cohort (pd.DataFrame): A DataFrame containing cohort information with case IDs and submitter IDs.
+        case_ids (list): A list of case IDs extracted from the cohort.
+        case_submitter_ids (list): A list of case submitter IDs extracted from the cohort.
+        DATA_DIR (str): Directory path where output files, such as the manifest, will be stored.
+        MAX_WORKERS (int): Maximum number of workers for concurrent processing.
+        GDC_BASE_URL (str): Base URL for the GDC API.
+        TCIA_BASE_URL (str): Base URL for the TCIA API.
+        manifest_path (str): Path to the manifest JSON file.
+        structured_manifest_all_modalities (list): A list to store structured data for all modalities.
+    Methods:
+        gdc_files(case_id, case_submitter_id):
+            Fetches file information from the GDC API for a given case ID and organizes it by data type.
+        tcia_files(patient_id):
+            Fetches file information from the TCIA API for a given patient ID.
+        add_or_update_entry_all_modalities(patient_id, modality_data, modality):
+            Adds or updates an entry in the structured manifest for a specific patient and modality.
+        format_tcia_response(tcia_response):
+            Processes the TCIA response and organizes data by modality.
+        generate_manifest():
+            Generates a manifest by aggregating data from GDC and TCIA sources, and writes it to a JSON file.
+    """
+
     def __init__(self, cohort, output_dir, max_workers=8):
         self.cohort = cohort
         self.case_ids = self.cohort.index.to_list()
