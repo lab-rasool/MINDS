@@ -10,4 +10,5 @@ app/med_minds/update.py
 app/med_minds.egg-info/PKG-INFO
 app/med_minds.egg-info/SOURCES.txt
 app/med_minds.egg-info/dependency_links.txt
+app/med_minds.egg-info/requires.txt
 app/med_minds.egg-info/top_level.txt
