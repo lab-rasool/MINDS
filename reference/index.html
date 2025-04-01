@@ -45,37 +45,37 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Reference</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Reference</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds">minds</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds">med_minds</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds.Cohort">Cohort</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds.Cohort">Cohort</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.Cohort.stats">stats</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.Cohort.stats">stats</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds.build_cohort">build_cohort</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds.build_cohort">build_cohort</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds.get_columns">get_columns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds.get_columns">get_columns</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.get_columns--parameters">Parameters</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.get_columns--parameters">Parameters</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.get_columns--returns">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.get_columns--returns">Returns</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds.get_tables">get_tables</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds.get_tables">get_tables</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.get_tables--returns">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.get_tables--returns">Returns</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#app.minds.query">query</a>
+    <li class="toctree-l2"><a class="reference internal" href="#app.med_minds.query">query</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.query--parameters">Parameters</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.query--parameters">Parameters</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#app.minds.query--returns">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#app.med_minds.query--returns">Returns</a>
     </li>
         </ul>
     </li>
@@ -112,10 +112,16 @@
 
 
 
-<a id="app.minds"></a>
-  <div class="doc doc-contents first">
+<a id="app.med_minds"></a>
+    <div class="doc doc-contents first">
 
-  
+
+
+
+
+
+
+
 
   <div class="doc doc-children">
 
@@ -130,20 +136,25 @@
 
 
 
-<h2 id="app.minds.Cohort" class="doc doc-heading">
-          <code>Cohort</code>
+<h2 id="app.med_minds.Cohort" class="doc doc-heading">
+            <code>Cohort</code>
 
 
 </h2>
 
 
-  <div class="doc doc-contents ">
+    <div class="doc doc-contents ">
 
 
-            <details class="quote">
-              <summary>Source code in <code>app\minds\__init__.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 61</span>
-<span class="normal"> 62</span>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 62</span>
 <span class="normal"> 63</span>
 <span class="normal"> 64</span>
 <span class="normal"> 65</span>
@@ -227,29 +238,35 @@
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
-<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Cohort</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Cohort</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">manifest_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;manifest.json&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">generate_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">aggregator</span> <span class="o">=</span> <span class="n">Aggregator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
         <span class="n">aggregator</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">include</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">include</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest_file</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No manifest file found in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">. Please run generate_manifest first.&quot;</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_download_gdc_files</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_download_tcia_files</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_download_tcia_files</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modalities</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modalities</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only including </span><span class="si">{</span><span class="n">modalities</span><span class="si">}</span><span class="s2"> modalities in download&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prints the statistics of the cohort in terms of file count and total size</span>
 
 <span class="sd">        Returns:</span>
@@ -283,7 +300,6 @@
             <span class="n">stats_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;total_size&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
 
-        <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">show_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">header_style</span><span class="o">=</span><span class="s2">&quot;bold green&quot;</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;File Count&quot;</span><span class="p">)</span>
@@ -302,24 +318,23 @@
         <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sorted_stats</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_download_gdc_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_gdc_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">gdc_downloader</span> <span class="o">=</span> <span class="n">GDCFileDownloader</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">MAX_WORKERS</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span>
         <span class="p">)</span>
         <span class="n">gdc_downloader</span><span class="o">.</span><span class="n">process_cases</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_download_tcia_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_tcia_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">tcia_downloader</span> <span class="o">=</span> <span class="n">TCIAFileDownloader</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">MAX_WORKERS</span><span class="o">=</span><span class="n">threads</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span>
         <span class="p">)</span>
         <span class="n">tcia_downloader</span><span class="o">.</span><span class="n">process_cases</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -332,17 +347,15 @@
 <div class="doc doc-object doc-function">
 
 
-
-<h3 id="app.minds.Cohort.stats" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">stats</span><span class="p">()</span></code>
+<h3 id="app.med_minds.Cohort.stats" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">stats</span><span class="p">()</span></code>
 
 </h3>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Prints the statistics of the cohort in terms of file count and total size</p>
+    <div class="doc doc-contents ">
 
+        <p>Prints the statistics of the cohort in terms of file count and total size</p>
 
 
 <table class="field-list">
@@ -352,27 +365,24 @@
   </colgroup>
   <tbody valign="top">
     <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
-<b><code>dict</code></b>            –
-            <div class="doc-md-description">
-              <p>A dictionary containing the statistics of the cohort</p>
-            </div>
-          </li>
-      </ul>
-    </td>
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>dict</code></b>              –
+              <div class="doc-md-description">
+                <p>A dictionary containing the statistics of the cohort</p>
+              </div>
+            </li>
+        </ul>
+      </td>
     </tr>
   </tbody>
 </table>
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
+
+            <details class="quote">
+              <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
 <span class="normal"> 88</span>
 <span class="normal"> 89</span>
 <span class="normal"> 90</span>
@@ -419,7 +429,10 @@
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
-<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prints the statistics of the cohort in terms of file count and total size</span>
 
 <span class="sd">    Returns:</span>
@@ -453,7 +466,6 @@
         <span class="n">stats_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;total_size&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
-    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">show_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">header_style</span><span class="o">=</span><span class="s2">&quot;bold green&quot;</span><span class="p">)</span>
     <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)</span>
     <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;File Count&quot;</span><span class="p">)</span>
@@ -472,8 +484,8 @@
     <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sorted_stats</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -481,33 +493,28 @@
 
   </div>
 
-  </div>
-
+    </div>
 
 </div>
-
 
 
 <div class="doc doc-object doc-function">
 
 
-
-<h2 id="app.minds.build_cohort" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h2 id="app.med_minds.build_cohort" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Builds a cohort based on a query or a GDC cohort file and returns a Cohort object.</p>
+    <div class="doc doc-contents ">
 
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
+        <p>Builds a cohort based on a query or a GDC cohort file and returns a Cohort object.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
@@ -516,7 +523,10 @@
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_cohort</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gdc_cohort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds a cohort based on a query or a GDC cohort file and returns a Cohort object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">query</span><span class="p">:</span>
         <span class="n">cohort_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_minds_cohort</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -530,36 +540,34 @@
         <span class="n">cohort</span><span class="o">.</span><span class="n">generate_manifest</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">cohort</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
-<h2 id="app.minds.get_columns" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></code>
+<h2 id="app.med_minds.get_columns" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Get the list of columns in a table</p>
-<h4 id="app.minds.get_columns--parameters">Parameters</h4>
+    <div class="doc doc-contents ">
+
+        <p>Get the list of columns in a table</p>
+<h4 id="app.med_minds.get_columns--parameters">Parameters</h4>
 <p>table : str
     The name of the table</p>
-<h4 id="app.minds.get_columns--returns">Returns</h4>
+<h4 id="app.med_minds.get_columns--returns">Returns</h4>
 <p>list
     A list of columns in the table</p>
 
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
-<span class="normal">30</span>
+
+            <details class="quote">
+              <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
@@ -571,7 +579,8 @@
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the list of columns in a table</span>
 
 <span class="sd">    Parameters</span>
@@ -586,40 +595,39 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_columns</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
-<h2 id="app.minds.get_tables" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_tables</span><span class="p">()</span></code>
+<h2 id="app.med_minds.get_tables" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_tables</span><span class="p">()</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Get the list of tables in the database</p>
-<h4 id="app.minds.get_tables--returns">Returns</h4>
+    <div class="doc doc-contents ">
+
+        <p>Get the list of tables in the database</p>
+<h4 id="app.med_minds.get_tables--returns">Returns</h4>
 <p>list
     A list of tables in the database</p>
 
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
-<span class="normal">19</span>
+
+            <details class="quote">
+              <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_tables</span><span class="p">():</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_tables</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the list of tables in the database</span>
 
 <span class="sd">    Returns</span>
@@ -629,36 +637,34 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_tables</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
-<h2 id="app.minds.query" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></code>
+<h2 id="app.med_minds.query" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
-      <p>Query the database and return the result as a pandas dataframe</p>
-<h4 id="app.minds.query--parameters">Parameters</h4>
+    <div class="doc doc-contents ">
+
+        <p>Query the database and return the result as a pandas dataframe</p>
+<h4 id="app.med_minds.query--parameters">Parameters</h4>
 <p>query_string : str
     The query string to be executed on the database</p>
-<h4 id="app.minds.query--returns">Returns</h4>
+<h4 id="app.med_minds.query--returns">Returns</h4>
 <p>pandas.DataFrame
     The result of the query</p>
 
-          <details class="quote">
-            <summary>Source code in <code>app\minds\__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">45</span>
-<span class="normal">46</span>
+
+            <details class="quote">
+              <summary>Source code in <code>app/med_minds/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
@@ -670,7 +676,8 @@
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
-<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Query the database and return the result as a pandas dataframe</span>
 
 <span class="sd">    Parameters</span>
@@ -685,8 +692,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -694,7 +701,7 @@
 
   </div>
 
-  </div>
+    </div>
 
 </div>
               
