@@ -290,7 +290,7 @@ tables = med_minds.get_tables()
 columns = med_minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
+query = "SELECT * FROM clinical WHERE project_project_id = 'TCGA-LUAD' LIMIT 10"
 df = med_minds.query(query)
 ```
 
