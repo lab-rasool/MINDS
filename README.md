@@ -7,10 +7,12 @@
     <h1>
     </h1>
 </div>
-
 <p align="center">
     <a href="https://pypi.org/project/med-minds/">
         <img src="https://img.shields.io/pypi/v/med-minds.svg" alt="PyPI Version">
+    </a>
+    <a href="https://pepy.tech/projects/med-minds">
+        <img src="https://static.pepy.tech/badge/med-minds" alt="PyPI Downloads">
     </a>
     <a href="https://pypi.org/project/med-minds/">
         <img src="https://img.shields.io/pypi/pyversions/med-minds.svg" alt="Python Versions">
