@@ -231,7 +231,25 @@ class GDCFileDownloader:
 
 
 class TCIAFileDownloader:
+    """
+    DEPRECATED: TCIA is no longer hosting controlled-access data due to NIH policy changes.
+    Use IDCFileDownloader instead to download data from the Imaging Data Commons.
+
+    See: https://www.cancerimagingarchive.net/new-nih-policies-for-controlled-access-data/
+    """
+
     def __init__(self, output_dir, MAX_WORKERS, **kwargs):
+        import warnings
+
+        warnings.warn(
+            "TCIAFileDownloader is deprecated due to NIH policy changes affecting TCIA data access. "
+            "Use IDCFileDownloader instead to download from the Imaging Data Commons (IDC). "
+            "TCIA support will be removed in a future version. "
+            "See: https://www.cancerimagingarchive.net/new-nih-policies-for-controlled-access-data/",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         self.output_dir = output_dir
         self.MAX_WORKERS = MAX_WORKERS
         self.MANIFEST_FILE = os.path.join(output_dir, "manifest.json")
@@ -387,24 +405,63 @@ class IDCFileDownloader:
         - itertools.chain: For flattening nested lists
     """
 
-    def __init__(self, save_directory):
-        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v1"
+    def __init__(self, save_directory, MAX_WORKERS=10, **kwargs):
+        self.idc_api_preamble = "https://api.imaging.datacommons.cancer.gov/v2"
         self.save_directory = save_directory
+        self.MAX_WORKERS = MAX_WORKERS
+        self.include = kwargs.get("include", [])
+        self.exclude = kwargs.get("exclude", [])
+        self.modalities = [
+            "MG",
+            "MR",
+            "CT",
+            "SEG",
+            "RTSTRUCT",
+            "CR",
+            "SR",
+            "US",
+            "PT",
+            "DX",
+            "RTDOSE",
+            "RTPLAN",
+            "PR",
+            "REG",
+            "RWV",
+            "NM",
+            "KO",
+            "FUSION",
+            "OT",
+            "XA",
+            "SC",
+            "RF",
+        ]
 
     @retry(tries=5, delay=2, backoff=2)
     def make_api_call(self, url, params, body):
         response = requests.post(url, params=params, json=body)
         if response.status_code == 200:
             data = response.json()
-            if "manifest" not in data:
-                return data
-            totalFound = data["manifest"]["totalFound"]
-            rowsReturned = data["manifest"]["rowsReturned"]
-            if totalFound <= rowsReturned:
-                return data
-            else:
-                params["page_size"] = totalFound + 10
-                return self.make_api_call(url, params, body)
+            # For v2 API, handle pagination differently
+            if "manifest" in data:
+                # Check if there are more pages
+                next_page = data.get("next_page")
+                # Handle both old format (json_manifest) and new format (manifest_data)
+                manifest_key = "manifest_data" if "manifest_data" in data["manifest"] else "json_manifest"
+                if next_page:
+                    # Fetch all pages and combine results
+                    all_results = data["manifest"][manifest_key]
+                    while next_page:
+                        params["next_page"] = next_page
+                        next_response = requests.post(url, params=params, json=body)
+                        if next_response.status_code == 200:
+                            next_data = next_response.json()
+                            all_results.extend(next_data["manifest"][manifest_key])
+                            next_page = next_data.get("next_page")
+                        else:
+                            break
+                    data["manifest"][manifest_key] = all_results
+                    data["manifest"]["rowsReturned"] = len(all_results)
+            return data
         else:
             raise Exception(f"Request failed: {response.reason}")
 
@@ -412,21 +469,14 @@ class IDCFileDownloader:
         url = f"{self.idc_api_preamble}/cohorts/manifest/preview"
         params = dict(
             sql=False,
-            Collection_ID=True,
-            Patient_ID=True,
-            StudyInstanceUID=True,
-            SeriesInstanceUID=True,
-            SOPInstanceUID=True,
-            Source_DOI=True,
-            CRDC_Study_GUID=True,
-            CRDC_Series_GUID=True,
-            CRDC_Instance_GUID=True,
-            GCS_URL=True,
         )
         body = {
-            "name": "MINDS",
-            "description": "MINDS",
-            "filters": filters,
+            "cohort_def": {
+                "name": "MINDS",
+                "description": "MINDS",
+                "filters": filters,
+            },
+            "fields": ["collection_id", "PatientID", "StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID", "crdc_series_uuid", "gcs_url"]
         }
         return self.make_api_call(url, params, body)
 
@@ -506,11 +556,13 @@ class IDCFileDownloader:
         manifest_dict = {}
         query_dict = {}
 
+        # Handle both old format (json_manifest) and new format (manifest_data)
+        manifest_key = "manifest_data" if "manifest_data" in manifest_data.get("manifest", {}) else "json_manifest"
+
         # Populate manifest_dict
-        for manifest_entry in manifest_data.get("manifest", {}).get(
-            "json_manifest", []
-        ):
-            patient_id = manifest_entry.get("Patient_ID")
+        for manifest_entry in manifest_data.get("manifest", {}).get(manifest_key, []):
+            # Handle both old field name (Patient_ID) and new field name (PatientID)
+            patient_id = manifest_entry.get("PatientID") or manifest_entry.get("Patient_ID")
             if patient_id not in manifest_dict:
                 manifest_dict[patient_id] = []
             manifest_dict[patient_id].append(manifest_entry)
@@ -530,7 +582,8 @@ class IDCFileDownloader:
                     for query_entry in query_entries:
                         merged_entry = {
                             "Patient_ID": patient_id,
-                            "GCS_URL": manifest_entry.get("GCS_URL"),
+                            # Handle both old field name (GCS_URL) and new field name (gcs_url)
+                            "GCS_URL": manifest_entry.get("gcs_url") or manifest_entry.get("GCS_URL"),
                             "Modality": query_entry.get("Modality"),
                         }
                         if merged_entry not in merged_data:
@@ -549,6 +602,13 @@ class IDCFileDownloader:
             # Skip over "SM" modalities
             if modality == "SM":
                 continue
+
+            # Apply include/exclude filters
+            if self.include and modality not in self.include:
+                continue
+            if self.exclude and modality in self.exclude:
+                continue
+
             file_info = {"gcs_url": gcs_url, "modality": modality}
 
             if patient_id in aggregated_data:
@@ -598,6 +658,12 @@ class IDCFileDownloader:
             if modality == "SM":
                 return
 
+            # Apply include/exclude filters
+            if self.include and modality not in self.include:
+                return
+            if self.exclude and modality in self.exclude:
+                return
+
             if patient_id in manifest_dict:
                 manifest_entry = manifest_dict[patient_id]
                 if modality not in manifest_entry:
@@ -629,13 +695,36 @@ class IDCFileDownloader:
         return None
 
     def process_cases(self, case_submitter_ids):
-        # Generate merged_data for all cases
-        with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
-            all_merged_data = list(
-                executor.map(self.generate_merged_data_for_case, case_submitter_ids)
-            )
+        """Process cases by reading IDC data directly from the manifest file.
 
-        all_merged_data = list(chain.from_iterable(all_merged_data))
+        This avoids re-querying the IDC API since the manifest was already generated
+        by the Aggregator with all necessary IDC imaging data.
+        """
+        # Read existing manifest
+        manifest_path = os.path.join(self.save_directory, "manifest.json")
+        with open(manifest_path, "r") as f:
+            manifest_data = json.load(f)
 
-        self.download_dicom_files(all_merged_data)
-        self.update_manifest(all_merged_data)
+        # Extract IDC files from manifest and prepare for download
+        all_merged_data = []
+        for patient_entry in manifest_data:
+            patient_id = patient_entry.get("PatientID")
+
+            # Process each modality in the patient entry
+            for key, value in patient_entry.items():
+                if key in ['PatientID', 'gdc_case_id'] or not isinstance(value, list):
+                    continue
+
+                # Check if this modality contains IDC data (has gcs_url)
+                for file_entry in value:
+                    if 'gcs_url' in file_entry and file_entry.get('source') == 'IDC':
+                        merged_entry = {
+                            "Patient_ID": patient_id,
+                            "GCS_URL": file_entry['gcs_url'],
+                            "Modality": key,  # Use the key as the modality
+                        }
+                        all_merged_data.append(merged_entry)
+
+        if all_merged_data:
+            self.download_dicom_files(all_merged_data)
+            # Note: update_manifest is not needed since we're reading from the manifest

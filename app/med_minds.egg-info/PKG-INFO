@@ -62,6 +62,11 @@ Requires-Dist: sqlalchemy
 Requires-Dist: psycopg2-binary
 Requires-Dist: cryptography
 Requires-Dist: rich
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: pytest-cov>=4.0.0; extra == "test"
+Requires-Dist: pytest-mock>=3.10.0; extra == "test"
+Requires-Dist: responses>=0.23.0; extra == "test"
 Dynamic: author
 Dynamic: home-page
 Dynamic: license-file
@@ -76,10 +81,12 @@ Dynamic: requires-python
     <h1>
     </h1>
 </div>
-
 <p align="center">
     <a href="https://pypi.org/project/med-minds/">
         <img src="https://img.shields.io/pypi/v/med-minds.svg" alt="PyPI Version">
+    </a>
+    <a href="https://pepy.tech/projects/med-minds">
+        <img src="https://static.pepy.tech/badge/med-minds" alt="PyPI Downloads">
     </a>
     <a href="https://pypi.org/project/med-minds/">
         <img src="https://img.shields.io/pypi/pyversions/med-minds.svg" alt="Python Versions">
@@ -96,7 +103,10 @@ Dynamic: requires-python
 
 <!-- Make a dropdown tab -->
 
-MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and IDC (Imaging Data Commons) portals.
+
+> [!IMPORTANT]
+> **TCIA Migration Notice:** As of this version, MINDS has migrated from TCIA (The Cancer Imaging Archive) to IDC (Imaging Data Commons) v2 API for imaging data access. TCIA is no longer hosting controlled-access data due to [new NIH policies](https://www.cancerimagingarchive.net/new-nih-policies-for-controlled-access-data/). All imaging data is now sourced from IDC, which provides broader access to imaging collections.
 
 > [!NOTE]
 > We are currently updating MINDS to include more data sources and improve the user experience. If you have any suggestions or would like to contribute, please feel free to reach out to us. Here is a list of the projects to be included in MINDS (115,974 total patients).
@@ -359,7 +369,7 @@ tables = med_minds.get_tables()
 columns = med_minds.get_columns("clinical")
 
 # Query the database directly
-query = "SELECT * FROM minds.clinical WHERE project_id = 'TCGA-LUAD' LIMIT 10"
+query = "SELECT * FROM clinical WHERE project_project_id = 'TCGA-LUAD' LIMIT 10"
 df = med_minds.query(query)
 ```
 

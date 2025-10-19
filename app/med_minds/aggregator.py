@@ -2,6 +2,7 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import numpy as np
 import requests
 from retry import retry
 from rich.progress import Progress
@@ -16,6 +17,14 @@ def numpy_to_python(data):
         return {key: numpy_to_python(value) for key, value in data.items()}
     elif isinstance(data, list):
         return [numpy_to_python(item) for item in data]
+    elif isinstance(data, np.ndarray):
+        return numpy_to_python(data.tolist())
+    elif isinstance(data, (np.integer, np.floating)):
+        return data.item()
+    elif isinstance(data, (np.str_, np.bytes_)):
+        return str(data)
+    elif isinstance(data, np.bool_):
+        return bool(data)
     else:
         return data
 
@@ -56,6 +65,7 @@ class Aggregator:
         self.TCIA_BASE_URL = (
             "https://services.cancerimagingarchive.net/services/v4/TCIA/query/"
         )
+        self.IDC_BASE_URL = "https://api.imaging.datacommons.cancer.gov/v2"
         self.manifest_path = os.path.join(self.DATA_DIR, "manifest.json")
         self.structured_manifest_all_modalities = []
 
@@ -111,16 +121,115 @@ class Aggregator:
 
     @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
     def tcia_files(self, patient_id):
+        """
+        Fetch imaging series from TCIA API for a given patient ID.
+
+        DEPRECATED: TCIA is no longer hosting controlled-access data due to NIH policy changes.
+        Use idc_files() instead to access data from the Imaging Data Commons.
+        """
+        import warnings
+
+        warnings.warn(
+            "TCIA API is deprecated. Use IDC API instead via idc_files() method.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         output_format = "&format=json"
         GET_SERIES_BY_PATIENT_ID = "getSeries?PatientID="
-        url = self.TCIA_BASE_URL + GET_SERIES_BY_PATIENT_ID + patient_id + output_format
-        url = url[0]
+        # Handle patient_id as either a list or string
+        patient_id_str = patient_id[0] if isinstance(patient_id, list) else patient_id
+        url = self.TCIA_BASE_URL + GET_SERIES_BY_PATIENT_ID + patient_id_str + output_format
         try:
             response = requests.get(url)
             if response.status_code == 200:
                 return response.json()
         except Exception as e:
             print(f"Error in TCIA request: {e}")
+            return None
+
+    @retry(tries=5, delay=5, backoff=2, jitter=(2, 9))
+    def idc_files(self, patient_id):
+        """Fetch imaging series from IDC v2 API for a given patient ID."""
+        url = f"{self.IDC_BASE_URL}/cohorts/manifest/preview"
+
+        # Convert patient_id to native Python type to ensure JSON serialization works
+        patient_id_clean = numpy_to_python(patient_id)
+
+        # v2 API uses different filter structure
+        # Determine collection from patient ID (e.g., TCGA-XX-XXXX -> tcga_luad for TCGA-LUAD patients)
+        pid = patient_id_clean[0] if isinstance(patient_id_clean, list) else patient_id_clean
+        collection_id = None
+        if pid.startswith("TCGA-"):
+            # For TCGA data, we'll let IDC search across all TCGA collections
+            # Alternatively, we could infer the collection from the project_id if we had that info
+            pass
+
+        filters = {"PatientID": [pid]}
+        # Note: Without knowing the specific collection, we query by PatientID only
+        # IDC will search across all collections
+
+        # IDC v2 API requires fields (lowercase field names for most, CamelCase for DICOM tags)
+        fields = [
+            "collection_id",
+            "PatientID",
+            "Modality",  # Add Modality directly to manifest
+            "StudyInstanceUID",
+            "SeriesInstanceUID",
+            "SOPInstanceUID",
+            "gcs_url",
+            "crdc_series_uuid"
+        ]
+
+        body = {
+            "cohort_def": {
+                "name": "MINDS_temp",
+                "description": "Temporary cohort for patient data",
+                "filters": filters,
+            },
+            "fields": fields
+        }
+
+        params = {
+            "sql": False
+        }
+
+        try:
+            response = requests.post(url, params=params, json=body)
+            if response.status_code == 200:
+                data = response.json()
+                # IDC v2 API uses 'manifest_data' key (not 'json_manifest')
+                manifest_data = data.get('manifest', {}).get('manifest_data', [])
+                # Also fetch metadata for modality information
+                query_url = f"{self.IDC_BASE_URL}/cohorts/query/preview"
+                query_body = {
+                    "cohort_def": {
+                        "name": "MINDS_temp",
+                        "description": "Temporary cohort",
+                        "filters": filters,
+                    },
+                    "queryFields": {
+                        "fields": [
+                            "PatientID",
+                            "SeriesInstanceUID",
+                            "Modality",
+                            "collection_id",
+                            "StudyDescription",
+                            "SeriesDescription",
+                        ]
+                    },
+                }
+                query_params = {"sql": False}
+                query_response = requests.post(query_url, params=query_params, json=query_body)
+
+                if query_response.status_code == 200:
+                    query_data = query_response.json()
+                    return {"manifest": data, "metadata": query_data}
+                else:
+                    return {"manifest": data, "metadata": None}
+            return None
+        except Exception as e:
+            print(f"Error in IDC request for {patient_id_clean}: {e}")
             return None
 
     def add_or_update_entry_all_modalities(self, patient_id, modality_data, modality):
@@ -172,11 +281,82 @@ class Aggregator:
                         item["PatientID"], modality_data, modality
                     )
 
-    def generate_manifest(self):
+    def format_idc_response(self, idc_response):
+        """Format IDC v2 API response and organize data by modality."""
+        idc_modalities = [
+            "MG",
+            "MR",
+            "CT",
+            "SEG",
+            "RTSTRUCT",
+            "CR",
+            "SR",
+            "US",
+            "PT",
+            "DX",
+            "RTDOSE",
+            "RTPLAN",
+            "PR",
+            "REG",
+            "RWV",
+            "NM",
+            "KO",
+            "FUSION",
+            "OT",
+            "XA",
+            "SC",
+            "RF",
+        ]
+
+        for patient_data in idc_response:
+            if not patient_data or not isinstance(patient_data, dict):
+                continue
+
+            manifest_data = patient_data.get("manifest", {})
+            metadata = patient_data.get("metadata", {})
+
+            # Extract manifest entries (IDC v2 uses 'manifest_data' key)
+            manifest_entries = manifest_data.get("manifest", {}).get("manifest_data", [])
+
+            # Process each manifest entry
+            # IDC v2 API includes Modality directly in manifest_data
+            for item in manifest_entries:
+                series_uid = item.get("SeriesInstanceUID")
+                patient_id = item.get("PatientID")  # IDC v2 uses 'PatientID' not 'Patient_ID'
+                modality = item.get("Modality")
+
+                if not series_uid or not patient_id:
+                    continue
+
+                if not modality:
+                    continue
+
+                if modality in idc_modalities:
+                    modality_data = {
+                        "SeriesInstanceUID": series_uid,
+                        "gcs_url": item.get("gcs_url"),  # IDC v2 uses lowercase 'gcs_url'
+                        "collection_id": item.get("collection_id"),  # IDC v2 uses lowercase 'collection_id'
+                        "crdc_series_uuid": item.get("crdc_series_uuid"),  # IDC v2 uses this instead of CRDC_Series_GUID
+                        "StudyInstanceUID": item.get("StudyInstanceUID"),
+                        "SOPInstanceUID": item.get("SOPInstanceUID"),
+                        "source": "IDC",
+                    }
+                    self.add_or_update_entry_all_modalities(
+                        patient_id, modality_data, modality
+                    )
+
+    def generate_manifest(self, use_idc=True):
+        """
+        Generate manifest by aggregating data from GDC and imaging sources.
+
+        Args:
+            use_idc (bool): If True, use IDC API (default). If False, fall back to TCIA.
+        """
+        # Step 1: Fetch GDC data
         with Progress() as progress:
             with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
                 task = progress.add_task(
-                    "Generating manifest...", total=len(self.case_ids)
+                    "Generating manifest from GDC...", total=len(self.case_ids)
                 )
                 futures = {
                     executor.submit(self.gdc_files, case_id, case_submitter_id): case_id
@@ -198,25 +378,60 @@ class Aggregator:
         with open(self.manifest_path, "w") as f:
             json.dump(processed_responses, f, indent=4)
 
-        with Progress() as progress:
-            with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
-                task = progress.add_task(
-                    "Aggregating data from other sources...",
-                    total=len(self.case_submitter_ids),
-                )
-                futures = {
-                    executor.submit(self.tcia_files, patient_id): patient_id
-                    for patient_id in self.case_submitter_ids
-                }
+        # Step 2: Fetch imaging data from IDC or TCIA
+        if use_idc:
+            # Use IDC v2 API
+            with Progress() as progress:
+                with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                    task = progress.add_task(
+                        "Aggregating imaging data from IDC...",
+                        total=len(self.case_submitter_ids),
+                    )
+                    futures = {
+                        executor.submit(self.idc_files, patient_id): patient_id
+                        for patient_id in self.case_submitter_ids
+                    }
 
-                all_tcia_responses = []
-                for future in as_completed(futures):
-                    progress.update(task, advance=1)
-                    tcia_response = future.result()
-                    all_tcia_responses.append(tcia_response)
+                    all_idc_responses = []
+                    for future in as_completed(futures):
+                        progress.update(task, advance=1)
+                        idc_response = future.result()
+                        all_idc_responses.append(idc_response)
 
-        self.format_tcia_response(all_tcia_responses)
+            self.format_idc_response(all_idc_responses)
+        else:
+            # Fall back to TCIA (deprecated)
+            import warnings
 
+            warnings.warn(
+                "TCIA API is deprecated due to NIH policy changes. "
+                "MINDS now uses the Imaging Data Commons (IDC) API by default. "
+                "TCIA support will be removed in a future version. "
+                "See: https://www.cancerimagingarchive.net/new-nih-policies-for-controlled-access-data/",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+            with Progress() as progress:
+                with ThreadPoolExecutor(max_workers=self.MAX_WORKERS) as executor:
+                    task = progress.add_task(
+                        "Aggregating imaging data from TCIA (deprecated)...",
+                        total=len(self.case_submitter_ids),
+                    )
+                    futures = {
+                        executor.submit(self.tcia_files, patient_id): patient_id
+                        for patient_id in self.case_submitter_ids
+                    }
+
+                    all_tcia_responses = []
+                    for future in as_completed(futures):
+                        progress.update(task, advance=1)
+                        tcia_response = future.result()
+                        all_tcia_responses.append(tcia_response)
+
+            self.format_tcia_response(all_tcia_responses)
+
+        # Step 3: Merge imaging data with GDC manifest
         with open(self.manifest_path, "r") as f:
             existing_manifest = json.load(f)
 

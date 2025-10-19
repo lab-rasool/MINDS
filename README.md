@@ -29,7 +29,10 @@
 
 <!-- Make a dropdown tab -->
 
-MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and TCIA portals.
+MINDS is a framework designed to integrate multimodal oncology data. It queries and integrates data from multiple sources, including clinical data, genomic data, and imaging data from the NIH NCI CRDC and IDC (Imaging Data Commons) portals.
+
+> [!IMPORTANT]
+> **TCIA Migration Notice:** As of this version, MINDS has migrated from TCIA (The Cancer Imaging Archive) to IDC (Imaging Data Commons) v2 API for imaging data access. TCIA is no longer hosting controlled-access data due to [new NIH policies](https://www.cancerimagingarchive.net/new-nih-policies-for-controlled-access-data/). All imaging data is now sourced from IDC, which provides broader access to imaging collections.
 
 > [!NOTE]
 > We are currently updating MINDS to include more data sources and improve the user experience. If you have any suggestions or would like to contribute, please feel free to reach out to us. Here is a list of the projects to be included in MINDS (115,974 total patients).

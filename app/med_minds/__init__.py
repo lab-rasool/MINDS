@@ -8,6 +8,7 @@ from .aggregator import Aggregator
 from .database import DatabaseManager
 from .downloader import (
     GDCFileDownloader,
+    IDCFileDownloader,
     TCIAFileDownloader,
 )
 from .update import MINDSUpdater
@@ -96,14 +97,37 @@ class Cohort:
         aggregator = Aggregator(self.data, self.output_dir)
         aggregator.generate_manifest()
 
-    def download(self, threads: int = 4, include: list = None, exclude: list = None):
+    def download(
+        self, threads: int = 4, include: list = None, exclude: list = None, use_idc: bool = True
+    ):
+        """
+        Download files from data sources.
+
+        Args:
+            threads (int): Number of concurrent download threads
+            include (list): List of modalities to include (if None, include all)
+            exclude (list): List of modalities to exclude
+            use_idc (bool): If True, use IDC for imaging data (default). If False, use TCIA (deprecated).
+        """
         if not os.path.exists(self.manifest_file):
             raise FileNotFoundError(
                 f"No manifest file found in {self.output_dir}. Please run generate_manifest first."
             )
 
         self._download_gdc_files(threads, include=include, exclude=exclude)
-        self._download_tcia_files(threads, include=include, exclude=exclude)
+
+        if use_idc:
+            self._download_idc_files(threads, include=include, exclude=exclude)
+        else:
+            import warnings
+
+            warnings.warn(
+                "TCIA download is deprecated. Using IDC is recommended. "
+                "TCIA support will be removed in a future version.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            self._download_tcia_files(threads, include=include, exclude=exclude)
 
     def include(self, modalities):
         print(f"Only including {modalities} modalities in download")
@@ -123,11 +147,7 @@ class Cohort:
                 if isinstance(value, list):
                     patient_size = 0
                     for file in value:
-                        try:
-                            patient_size += file["file_size"]
-                        except Exception as e:
-                            console.print(f"Error calculating size for {file}: {e}")
-                            pass
+                        patient_size += file.get("file_size", 0)
 
                     if key not in stats_dict:
                         stats_dict[key] = {
@@ -167,7 +187,18 @@ class Cohort:
         )
         gdc_downloader.process_cases()
 
+    def _download_idc_files(self, threads, include=None, exclude=None):
+        """Download imaging files from IDC (Imaging Data Commons)."""
+        idc_downloader = IDCFileDownloader(
+            self.output_dir, MAX_WORKERS=threads, include=include, exclude=exclude
+        )
+        idc_downloader.process_cases(self.data.values.tolist())
+
     def _download_tcia_files(self, threads, include=None, exclude=None):
+        """
+        DEPRECATED: Download imaging files from TCIA.
+        Use _download_idc_files() instead.
+        """
         tcia_downloader = TCIAFileDownloader(
             self.output_dir, MAX_WORKERS=threads, include=include, exclude=exclude
         )

@@ -12,3 +12,10 @@ app/med_minds.egg-info/SOURCES.txt
 app/med_minds.egg-info/dependency_links.txt
 app/med_minds.egg-info/requires.txt
 app/med_minds.egg-info/top_level.txt
+tests/test_aggregator.py
+tests/test_api.py
+tests/test_cohort.py
+tests/test_database.py
+tests/test_downloader.py
+tests/test_integration.py
+tests/test_update.py
