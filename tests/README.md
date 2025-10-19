@@ -113,5 +113,3 @@ If tests fail:
 3. Verify Python version (3.7+)
 4. Clear pytest cache: `pytest --cache-clear`
 5. Check for conflicting environment variables
-
-For more help, see the main CLAUDE.md file or pytest documentation.
