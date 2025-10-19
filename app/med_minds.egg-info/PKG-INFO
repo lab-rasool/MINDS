@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: med-minds
-Version: 0.1.0
+Version: 0.2.0
 Summary: A package for downloading and processing multimodal oncology data from the MINDS database
 Home-page: https://github.com/lab-rasool/MINDS
 Author: Aakash Tripathi

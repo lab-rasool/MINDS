@@ -50,7 +50,7 @@ requirements = [
 
 setup(
     name="med-minds",  # Changed from minds to med-minds
-    version="0.1.0",  # PostgreSQL migration version
+    version="0.2.0",  # IDC v2 API migration and comprehensive test suite
     description="A package for downloading and processing multimodal oncology data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
