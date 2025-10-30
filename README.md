@@ -17,9 +17,6 @@
     <a href="https://pypi.org/project/med-minds/">
         <img src="https://img.shields.io/pypi/pyversions/med-minds.svg" alt="Python Versions">
     </a>
-    <a href="https://github.com/lab-rasool/MINDS/blob/main/LICENSE">
-        <img src="https://img.shields.io/github/license/lab-rasool/MINDS.svg" alt="License">
-    </a>
     <a href="https://doi.org/10.3390/s24051634">
         <img src="https://img.shields.io/badge/DOI-10.3390%2Fs24051634-blue" alt="DOI">
     </a>
