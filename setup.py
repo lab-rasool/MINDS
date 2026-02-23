@@ -50,7 +50,7 @@ requirements = [
 
 setup(
     name="med-minds",  # Changed from minds to med-minds
-    version="0.2.0",  # IDC v2 API migration and comprehensive test suite
+    version="0.2.1",  # Fix StringArray crash in IDC aggregation
     description="A package for downloading and processing multimodal oncology data from the MINDS database",
     package_dir={"": "app"},
     packages=find_packages(where="app"),

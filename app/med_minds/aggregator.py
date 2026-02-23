@@ -58,7 +58,7 @@ class Aggregator:
     def __init__(self, cohort, output_dir, max_workers=8):
         self.cohort = cohort
         self.case_ids = self.cohort.index.to_list()
-        self.case_submitter_ids = self.cohort.values.tolist()
+        self.case_submitter_ids = [list(v) for v in self.cohort.values]
         self.DATA_DIR = output_dir
         self.MAX_WORKERS = max_workers
         self.GDC_BASE_URL = "https://api.gdc.cancer.gov/"
